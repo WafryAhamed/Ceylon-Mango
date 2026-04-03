@@ -6,6 +6,7 @@ import com.ceylonmango.model.*;
 import com.ceylonmango.repository.CartItemRepository;
 import com.ceylonmango.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +15,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CartItemRepository cartItemRepository;
     private final AuthService authService;
+    private final EmailService emailService;
 
     @Transactional
     public OrderDto createOrder(OrderRequest request) {
@@ -62,6 +65,21 @@ public class OrderService {
 
         // Clear cart after order
         cartItemRepository.deleteByUserId(user.getId());
+
+        // Send order confirmation email
+        try {
+            emailService.sendOrderConfirmationEmail(
+                user.getEmail(),
+                user.getName(),
+                savedOrder.getId(),
+                savedOrder.getTotalPrice().toString(),
+                savedOrder.getShippingAddress()
+            );
+            log.info("Order confirmation email sent for order #{}", savedOrder.getId());
+        } catch (Exception e) {
+            log.error("Failed to send order confirmation email: {}", e.getMessage());
+            // Don't fail the order creation if email fails
+        }
 
         return OrderDto.fromEntity(savedOrder);
     }
