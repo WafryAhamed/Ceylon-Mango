@@ -71,10 +71,10 @@ const runTests = async () => {
   log.section('1️⃣  TESTING AUTHENTICATION ENDPOINTS');
 
   // Test login
-  log.test('Testing customer login (john@example.com)');
+  log.test('Testing customer login (aroos.dev@gmail.com)');
   totalTests++;
-  let response = await testAPI('POST', '/auth/login', {
-    email: 'john@example.com',
+  response = await testAPI('POST', '/auth/login', {
+    email: 'aroos.dev@gmail.com',
     password: 'password123'
   });
 
@@ -87,10 +87,10 @@ const runTests = async () => {
   }
 
   // Test admin login
-  log.test('Testing admin login (admin@ceylonmango.lk)');
+  log.test('Testing admin login (nimal.perera.lk@gmail.com)');
   totalTests++;
   response = await testAPI('POST', '/auth/admin/login', {
-    email: 'admin@ceylonmango.lk',
+    email: 'nimal.perera.lk@gmail.com',
     password: 'admin123'
   });
 
