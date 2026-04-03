@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
-import { products, categories } from '../data/products';
+import { categories, fetchProducts } from '../data/products';
 const allCategories = [{
   id: 'all',
   name: 'All Products'
@@ -16,20 +16,30 @@ export function Shop() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState('default');
-  const filtered = useMemo(() => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts().then(data => {
+      setProducts(data);
+      setLoading(false);
+    });
+  }, []);
+
+  const filtered = React.useMemo(() => {
     let result = products;
     if (activeCategory !== 'all') {
       result = result.filter(p => p.category === activeCategory);
     }
     if (search.trim()) {
       const q = search.toLowerCase();
-      result = result.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+      result = result.filter(p => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)));
     }
     if (sortBy === 'price-asc') result = [...result].sort((a, b) => a.price - b.price);
     if (sortBy === 'price-desc') result = [...result].sort((a, b) => b.price - a.price);
     if (sortBy === 'rating') result = [...result].sort((a, b) => b.rating - a.rating);
     return result;
-  }, [activeCategory, search, sortBy]);
+  }, [products, activeCategory, search, sortBy]);
   return <div className="min-h-screen w-full bg-[#1A1A1A]">
       <Navbar />
 
@@ -140,7 +150,10 @@ export function Shop() {
 
           {/* Product Grid */}
           <AnimatePresence mode="wait">
-            {filtered.length === 0 ? <motion.div key="empty" initial={{
+            {loading ? <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-24">
+                <span className="text-6xl mb-4 block">🥭</span>
+                <p className="text-[#AAAAAA]">Loading products...</p>
+              </motion.div> : filtered.length === 0 ? <motion.div key="empty" initial={{
             opacity: 0
           }} animate={{
             opacity: 1

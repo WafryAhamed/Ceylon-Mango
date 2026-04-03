@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PackageIcon, ChevronDownIcon, ChevronUpIcon, ShoppingBagIcon } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { mockOrders } from '../data/orders';
+import { fetchUserOrders } from '../data/orders';
 const statusConfig = {
   processing: {
     label: 'Processing',
@@ -122,6 +122,16 @@ function OrderCard({
     </motion.div>;
 }
 export function OrderHistory() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUserOrders().then(data => {
+      setOrders(data);
+      setLoading(false);
+    });
+  }, []);
+
   return <div className="min-h-screen w-full bg-[#1A1A1A]">
       <Navbar />
 
@@ -141,11 +151,14 @@ export function OrderHistory() {
             Order <span className="text-gradient-mango">History</span>
           </h1>
           <p className="text-[#AAAAAA] mt-2">
-            {mockOrders.length} orders found
+            {orders.length} orders found
           </p>
         </motion.div>
 
-        {mockOrders.length === 0 ? <div className="text-center py-24">
+        {loading ? <div className="text-center py-24">
+            <span className="text-5xl mb-4 block">🥭</span>
+            <p className="text-[#AAAAAA]">Loading orders...</p>
+          </div> : orders.length === 0 ? <div className="text-center py-24">
             <ShoppingBagIcon size={56} className="text-[#333333] mx-auto mb-4" />
           
             <h2 className="text-2xl font-bold text-[#F5F5F5] mb-3" style={{
@@ -168,7 +181,7 @@ export function OrderHistory() {
               </motion.button>
             </Link>
           </div> : <div className="space-y-4">
-            {mockOrders.map(order => <OrderCard key={order.id} order={order} />)}
+            {orders.map(order => <OrderCard key={order.id} order={order} />)}
           </div>}
       </div>
 

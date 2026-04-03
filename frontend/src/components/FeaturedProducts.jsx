@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRightIcon } from 'lucide-react';
 import { ProductCard } from './ProductCard';
-import { getFeaturedProducts } from '../data/products';
+import { fetchFeaturedProducts } from '../data/products';
 const containerVariants = {
   hidden: {},
   visible: {
@@ -27,7 +27,12 @@ const itemVariants = {
   }
 };
 export function FeaturedProducts() {
-  const featured = getFeaturedProducts();
+  const [featured, setFeatured] = useState([]);
+
+  useEffect(() => {
+    fetchFeaturedProducts().then(data => setFeatured(data));
+  }, []);
+
   return <section className="py-20 bg-[#1A1A1A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}

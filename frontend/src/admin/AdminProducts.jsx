@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlusIcon, SearchIcon, EditIcon, Trash2Icon, PackageIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { mockAdminProducts } from '../data/adminData';
+import { fetchAdminProducts } from '../data/adminData';
+import { productApi } from '../api/productApi';
 import { ConfirmModal } from './components/ConfirmModal';
 import { AdminProductModal } from './components/AdminProductModal';
 const categoryLabels = {
@@ -18,9 +19,17 @@ const categoryColors = {
   preserves: 'bg-purple-500/20 text-purple-400'
 };
 export function AdminProducts() {
-  const [products, setProducts] = useState(mockAdminProducts);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+
+  useEffect(() => {
+    fetchAdminProducts().then(data => {
+      setProducts(data);
+      setLoading(false);
+    });
+  }, []);
   const [productModal, setProductModal] = useState({
     open: false,
     product: null
@@ -38,31 +47,34 @@ export function AdminProducts() {
     }
     return result;
   }, [products, search, filterCategory]);
-  const handleSaveProduct = data => {
-    if (productModal.product) {
-      setProducts(prev => prev.map(p => p.id === productModal.product.id ? {
-        ...p,
-        ...data
-      } : p));
-      toast.success(`✅ "${data.name}" updated successfully`);
-    } else {
-      const newProduct = {
-        ...data,
-        id: `p-${Date.now()}`,
-        sales: 0
-      };
-      setProducts(prev => [newProduct, ...prev]);
-      toast.success(`🥭 "${data.name}" added successfully`);
+  const handleSaveProduct = async data => {
+    try {
+      if (productModal.product) {
+        const res = await productApi.update(productModal.product.id, data);
+        setProducts(prev => prev.map(p => p.id === productModal.product.id ? { ...p, ...res.data } : p));
+        toast.success(`✅ "${data.name}" updated successfully`);
+      } else {
+        const res = await productApi.create(data);
+        setProducts(prev => [res.data, ...prev]);
+        toast.success(`🥭 "${data.name}" added successfully`);
+      }
+      setProductModal({
+        open: false,
+        product: null
+      });
+    } catch {
+      toast.error('Failed to save product');
     }
-    setProductModal({
-      open: false,
-      product: null
-    });
   };
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (deleteModal.product) {
-      setProducts(prev => prev.filter(p => p.id !== deleteModal.product.id));
-      toast.success(`🗑️ "${deleteModal.product.name}" deleted`);
+      try {
+        await productApi.delete(deleteModal.product.id);
+        setProducts(prev => prev.filter(p => p.id !== deleteModal.product.id));
+        toast.success(`🗑️ "${deleteModal.product.name}" deleted`);
+      } catch {
+        toast.error('Failed to delete product');
+      }
       setDeleteModal({
         open: false,
         product: null
@@ -139,8 +151,13 @@ export function AdminProducts() {
     }} transition={{
       delay: 0.2
     }} className="bg-[#222222] rounded-2xl border border-[#333333] overflow-hidden">
-        
-        <div className="overflow-x-auto">
+        {loading ? <div className="text-center py-24 text-[#AAAAAA]">
+          <span className="text-4xl mb-3 block">📦</span>
+          Loading products...
+        </div> : filtered.length === 0 ? <div className="text-center py-16">
+            <PackageIcon size={40} className="text-[#333333] mx-auto mb-3" />
+            <p className="text-[#AAAAAA] text-sm">No products found</p>
+          </div> : <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-[#333333]">
@@ -218,12 +235,7 @@ export function AdminProducts() {
               </AnimatePresence>
             </tbody>
           </table>
-        </div>
-
-        {filtered.length === 0 && <div className="text-center py-16">
-            <PackageIcon size={40} className="text-[#333333] mx-auto mb-3" />
-            <p className="text-[#AAAAAA] text-sm">No products found</p>
-          </div>}
+        </div>}
       </motion.div>
 
       {/* Modals */}

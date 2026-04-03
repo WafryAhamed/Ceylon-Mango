@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CreditCardIcon, TruckIcon, CheckIcon, LockIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { Navbar } from '../components/Navbar';
 import { useCart } from '../context/CartContext';
+import { orderApi } from '../api/orderApi';
 export function Checkout() {
   const navigate = useNavigate();
   const {
@@ -38,9 +40,18 @@ export function Checkout() {
   const handlePlaceOrder = async e => {
     e.preventDefault();
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1500));
-    clearCart();
-    navigate('/order-success');
+    try {
+      const fullAddress = `${form.firstName} ${form.lastName}, ${form.address}, ${form.city}, ${form.zip}, ${form.country}`;
+      await orderApi.createOrder({
+        shippingAddress: fullAddress,
+        paymentMethod: paymentMethod === 'card' ? 'CREDIT_CARD' : 'CASH_ON_DELIVERY'
+      });
+      clearCart();
+      navigate('/order-success');
+    } catch {
+      toast.error('Failed to place order. Please try again.');
+      setLoading(false);
+    }
   };
   const inputClass = 'w-full bg-[#222222] border border-[#333333] text-[#F5F5F5] rounded-xl px-4 py-3 focus:outline-none focus:border-[#EFB806]/50 placeholder-[#555555] text-sm';
   const labelClass = 'block text-[#AAAAAA] text-sm mb-1.5';

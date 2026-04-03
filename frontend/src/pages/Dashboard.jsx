@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { UserIcon, PackageIcon, HeartIcon, SettingsIcon, LogOutIcon, EditIcon, CheckIcon } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
-import { mockOrders } from '../data/orders';
+import { fetchUserOrders } from '../data/orders';
 const statusColors = {
   processing: 'bg-[#EFB806]/20 text-[#EFB806]',
   shipped: 'bg-blue-500/20 text-blue-400',
@@ -24,11 +24,16 @@ export function Dashboard() {
     phone: user?.phone || '',
     address: user?.address || ''
   });
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    fetchUserOrders().then(data => setOrders(data));
+  }, []);
   const handleSave = () => {
     updateProfile(editForm);
     setEditing(false);
   };
-  const recentOrders = mockOrders.slice(0, 3);
+  const recentOrders = orders.slice(0, 3);
   const quickLinks = [{
     icon: PackageIcon,
     label: 'Order History',
@@ -204,15 +209,15 @@ export function Dashboard() {
               
               {[{
               label: 'Total Orders',
-              value: mockOrders.length,
+              value: orders.length,
               color: '#EFB806'
             }, {
               label: 'Delivered',
-              value: mockOrders.filter(o => o.status === 'delivered').length,
+              value: orders.filter(o => o.status === 'delivered').length,
               color: '#3B653D'
             }, {
               label: 'Processing',
-              value: mockOrders.filter(o => o.status === 'processing').length,
+              value: orders.filter(o => o.status === 'processing').length,
               color: '#D37E05'
             }].map(stat => <div key={stat.label} className="bg-[#222222] rounded-2xl p-5 border border-[#333333] text-center">
                 

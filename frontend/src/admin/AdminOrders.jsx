@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchIcon, ChevronDownIcon, ChevronUpIcon, ShoppingCartIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { mockAdminOrders } from '../data/adminData';
+import { fetchAdminOrders } from '../data/adminData';
+import { orderApi } from '../api/orderApi';
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 const statusColors = {
   pending: {
@@ -109,9 +110,18 @@ function OrderRow({
     </>;
 }
 export function AdminOrders() {
-  const [orders, setOrders] = useState(mockAdminOrders);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+
+  useEffect(() => {
+    fetchAdminOrders().then(data => {
+      setOrders(data);
+      setLoading(false);
+    });
+  }, []);
+
   const filtered = useMemo(() => {
     let result = orders;
     if (filterStatus !== 'all') result = result.filter(o => o.status === filterStatus);
@@ -121,12 +131,17 @@ export function AdminOrders() {
     }
     return result;
   }, [orders, search, filterStatus]);
-  const handleStatusChange = (id, status) => {
-    setOrders(prev => prev.map(o => o.id === id ? {
-      ...o,
-      status
-    } : o));
-    toast.success(`📦 Order ${id} updated to "${status}"`);
+  const handleStatusChange = async (id, status) => {
+    try {
+      await orderApi.updateOrderStatus(id, status);
+      setOrders(prev => prev.map(o => o.id === id ? {
+        ...o,
+        status
+      } : o));
+      toast.success(`📦 Order ${id} updated to "${status}"`);
+    } catch {
+      toast.error('Failed to update order status');
+    }
   };
   return <div className="space-y-6">
       {/* Header */}
@@ -186,7 +201,10 @@ export function AdminOrders() {
       delay: 0.2
     }} className="bg-[#222222] rounded-2xl border border-[#333333] overflow-hidden">
         
-        <div className="overflow-x-auto">
+        {loading ? <div className="text-center py-24 text-[#AAAAAA]">
+          <span className="text-4xl mb-3 block">📦</span>
+          Loading orders...
+        </div> : <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-[#333333]">
@@ -200,7 +218,7 @@ export function AdminOrders() {
               {filtered.map(order => <OrderRow key={order.id} order={order} onStatusChange={handleStatusChange} />)}
             </tbody>
           </table>
-        </div>
+        </div>}
 
         {filtered.length === 0 && <div className="text-center py-16">
             <ShoppingCartIcon size={40} className="text-[#333333] mx-auto mb-3" />

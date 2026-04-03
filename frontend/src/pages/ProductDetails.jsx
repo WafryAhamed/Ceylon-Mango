@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCartIcon, StarIcon, ChevronRightIcon, MinusIcon, PlusIcon, TruckIcon, ShieldCheckIcon, RefreshCwIcon } from 'lucide-react';
@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
-import { getProductById, products } from '../data/products';
+import { fetchProductById, fetchProducts } from '../data/products';
 import { useCart } from '../context/CartContext';
 export function ProductDetails() {
   const {
@@ -16,9 +16,36 @@ export function ProductDetails() {
   const {
     addToCart
   } = useCart();
-  const product = getProductById(id || '');
+  const [product, setProduct] = useState(null);
+  const [related, setRelated] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    setLoading(true);
+    setSelectedImage(0);
+    setQuantity(1);
+    fetchProductById(id).then(p => {
+      setProduct(p);
+      setLoading(false);
+      if (p) {
+        fetchProducts().then(allProducts => {
+          setRelated(allProducts.filter(r => r.category === p.category && r.id !== p.id).slice(0, 4));
+        });
+      }
+    });
+  }, [id]);
+
+  if (loading) {
+    return <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center">
+        <div className="text-center">
+          <span className="text-6xl mb-4 block">🥭</span>
+          <p className="text-[#AAAAAA]">Loading...</p>
+        </div>
+      </div>;
+  }
+
   if (!product) {
     return <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center">
         <div className="text-center">
@@ -36,7 +63,6 @@ export function ProductDetails() {
       </div>;
   }
   const images = product.images || [product.image];
-  const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const handleAddToCart = () => {
     addToCart(product, quantity);
     toast.success(`🥭 ${product.name} added to cart!`);

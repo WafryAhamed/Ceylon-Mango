@@ -1,13 +1,23 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchIcon, Trash2Icon, UsersIcon, ShieldIcon, UserIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { mockAdminUsers } from '../data/adminData';
+import { fetchAdminUsers } from '../data/adminData';
+import { userApi } from '../api/userApi';
 import { ConfirmModal } from './components/ConfirmModal';
 export function AdminUsers() {
-  const [users, setUsers] = useState(mockAdminUsers);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterRole, setFilterRole] = useState('all');
+
+  useEffect(() => {
+    fetchAdminUsers().then(data => {
+      setUsers(data);
+      setLoading(false);
+    });
+  }, []);
+
   const [deleteModal, setDeleteModal] = useState({
     open: false,
     user: null
@@ -21,7 +31,7 @@ export function AdminUsers() {
     }
     return result;
   }, [users, search, filterRole]);
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (deleteModal.user) {
       if (deleteModal.user.role === 'admin') {
         toast.error('Cannot delete admin users');
@@ -31,8 +41,13 @@ export function AdminUsers() {
         });
         return;
       }
-      setUsers(prev => prev.filter(u => u.id !== deleteModal.user.id));
-      toast.success(`🗑️ "${deleteModal.user.name}" removed`);
+      try {
+        await userApi.delete(deleteModal.user.id);
+        setUsers(prev => prev.filter(u => u.id !== deleteModal.user.id));
+        toast.success(`🗑️ "${deleteModal.user.name}" removed`);
+      } catch {
+        toast.error('Failed to delete user');
+      }
       setDeleteModal({
         open: false,
         user: null
@@ -93,8 +108,13 @@ export function AdminUsers() {
     }} transition={{
       delay: 0.2
     }} className="bg-[#222222] rounded-2xl border border-[#333333] overflow-hidden">
-        
-        <div className="overflow-x-auto">
+        {loading ? <div className="text-center py-24 text-[#AAAAAA]">
+          <span className="text-4xl mb-3 block">👥</span>
+          Loading users...
+        </div> : filtered.length === 0 ? <div className="text-center py-24 text-[#AAAAAA]">
+          <span className="text-4xl mb-3 block">🔍</span>
+          No users found
+        </div> : <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-[#333333]">
@@ -163,12 +183,7 @@ export function AdminUsers() {
               </AnimatePresence>
             </tbody>
           </table>
-        </div>
-
-        {filtered.length === 0 && <div className="text-center py-16">
-            <UsersIcon size={40} className="text-[#333333] mx-auto mb-3" />
-            <p className="text-[#AAAAAA] text-sm">No users found</p>
-          </div>}
+        </div>}
       </motion.div>
 
       {/* Delete Modal */}

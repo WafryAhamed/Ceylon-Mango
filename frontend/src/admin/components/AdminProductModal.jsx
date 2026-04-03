@@ -4,12 +4,14 @@ import { XIcon, ImageIcon } from 'lucide-react';
 const emptyForm = {
   name: '',
   price: 0,
+  originalPrice: null,
   category: 'fresh',
   image: '',
   description: '',
   weight: '',
   inStock: true,
-  stock: 0
+  stock: 0,
+  featured: false
 };
 export function AdminProductModal({
   open,
@@ -23,12 +25,14 @@ export function AdminProductModal({
       setForm({
         name: product.name,
         price: product.price,
+        originalPrice: product.originalPrice || null,
         category: product.category,
         image: product.image,
         description: product.description,
         weight: product.weight,
         inStock: product.inStock,
-        stock: product.stock
+        stock: product.stock,
+        featured: product.featured || false
       });
     } else {
       setForm(emptyForm);
@@ -113,6 +117,22 @@ export function AdminProductModal({
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Original Price ($) - Leave empty for no sale</label>
+                  <input type="number" step="0.01" value={form.originalPrice || ''} onChange={e => setForm(prev => ({
+                ...prev,
+                originalPrice: e.target.value ? parseFloat(e.target.value) : null
+              }))} placeholder="e.g. 29.99" className={inputClass} />
+                
+                </div>
+                <div>
+                  <label className={labelClass}>Weight</label>
+                  <input type="text" value={form.weight} onChange={update('weight')} placeholder="e.g. 1 kg" className={inputClass} />
+                
+                </div>
+              </div>
+
               <div>
                 <label className={labelClass}>Image URL</label>
                 <div className="flex gap-3">
@@ -131,12 +151,19 @@ export function AdminProductModal({
               
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Weight</label>
-                  <input type="text" value={form.weight} onChange={update('weight')} placeholder="e.g. 1 kg" className={inputClass} />
+              <div className="flex items-center gap-3">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked={form.featured} onChange={e => setForm(prev => ({
+                ...prev,
+                featured: e.target.checked
+              }))} className="sr-only peer" />
                 
-                </div>
+                  <div className="w-9 h-5 bg-[#333333] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#AAAAAA] after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#EFB806] peer-checked:after:bg-[#1A1A1A]" />
+                </label>
+                <span className="text-[#AAAAAA] text-sm">Featured Product</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className={labelClass}>Stock Quantity</label>
                   <input type="number" value={form.stock} onChange={update('stock')} className={inputClass} />

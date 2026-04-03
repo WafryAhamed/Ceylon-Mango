@@ -1,65 +1,90 @@
-import React, { useCallback, useState, createContext, useContext } from 'react';
+import React, { useCallback, useState, useEffect, createContext, useContext } from 'react';
+import { authApi } from '../api/authApi';
+
 const AuthContext = createContext(undefined);
-export function AuthProvider({
-  children
-}) {
+
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const login = useCallback(async (email, _password) => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    setUser({
-      id: '1',
-      name: 'John Doe',
-      email,
-      role: 'customer',
-      phone: '+94 77 123 4567',
-      address: '42 Palm Avenue, Colombo 07, Sri Lanka'
-    });
+  const [loading, setLoading] = useState(true);
+
+  // Restore session from stored token on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      authApi.getMe()
+        .then(res => {
+          setUser(res.data);
+        })
+        .catch(() => {
+          localStorage.removeItem('token');
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const login = useCallback(async (email, password) => {
+    const res = await authApi.login(email, password);
+    const { token, user: userData } = res.data;
+    localStorage.setItem('token', token);
+    setUser(userData);
     return true;
   }, []);
-  const adminLogin = useCallback(async (email, _password) => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    setUser({
-      id: 'admin-1',
-      name: 'Sarah Silva',
-      email,
-      role: 'admin',
-      phone: '+94 77 987 6543'
-    });
+
+  const adminLogin = useCallback(async (email, password) => {
+    const res = await authApi.adminLogin(email, password);
+    const { token, user: userData } = res.data;
+    localStorage.setItem('token', token);
+    setUser(userData);
     return true;
   }, []);
-  const signup = useCallback(async (name, email, _password) => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    setUser({
-      id: '1',
-      name,
-      email,
-      role: 'customer'
-    });
+
+  const signup = useCallback(async (name, email, password) => {
+    const res = await authApi.register(name, email, password);
+    const { token, user: userData } = res.data;
+    localStorage.setItem('token', token);
+    setUser(userData);
     return true;
   }, []);
+
   const logout = useCallback(() => {
+    localStorage.removeItem('token');
     setUser(null);
   }, []);
-  const updateProfile = useCallback(updates => {
-    setUser(prev => prev ? {
-      ...prev,
-      ...updates
-    } : null);
+
+  const updateProfile = useCallback(async (updates) => {
+    try {
+      const res = await authApi.updateProfile(updates);
+      setUser(res.data);
+    } catch {
+      // Fallback to local update if API fails
+      setUser(prev => prev ? { ...prev, ...updates } : null);
+    }
   }, []);
-  return <AuthContext.Provider value={{
-    user,
-    isAuthenticated: !!user,
-    isAdmin: user?.role === 'admin',
-    login,
-    adminLogin,
-    signup,
-    logout,
-    updateProfile
-  }}>
-      
+
+  if (loading) {
+    return null; // Or a loading spinner — prevents flash of unauthenticated state
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isAdmin: user?.role === 'admin',
+        login,
+        adminLogin,
+        signup,
+        logout,
+        updateProfile,
+      }}
+    >
       {children}
-    </AuthContext.Provider>;
+    </AuthContext.Provider>
+  );
 }
+
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {

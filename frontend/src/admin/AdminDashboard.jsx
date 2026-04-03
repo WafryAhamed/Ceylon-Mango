@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { PackageIcon, ShoppingCartIcon, DollarSignIcon, UsersIcon, TrendingUpIcon, ArrowUpRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { mockAdminProducts, mockAdminOrders, mockAdminUsers } from '../data/adminData';
+import { fetchAdminProducts, fetchAdminOrders, fetchAdminUsers } from '../data/adminData';
 const statusColors = {
   pending: {
     bg: 'bg-[#EFB806]/20',
@@ -26,17 +26,35 @@ const statusColors = {
   }
 };
 export function AdminDashboard() {
-  const totalRevenue = mockAdminOrders.reduce((sum, o) => sum + o.total, 0);
-  const recentOrders = [...mockAdminOrders].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetchAdminProducts(),
+      fetchAdminOrders(),
+      fetchAdminUsers()
+    ]).then(([pData, oData, uData]) => {
+      setProducts(pData);
+      setOrders(oData);
+      setUsers(uData);
+      setLoading(false);
+    });
+  }, []);
+
+  const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+  const recentOrders = [...orders].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   const stats = [{
     label: 'Total Products',
-    value: mockAdminProducts.length,
+    value: products.length,
     icon: PackageIcon,
     color: '#EFB806',
     change: '+3 this month'
   }, {
     label: 'Total Orders',
-    value: mockAdminOrders.length,
+    value: orders.length,
     icon: ShoppingCartIcon,
     color: '#3B653D',
     change: '+12 this week'
@@ -48,11 +66,15 @@ export function AdminDashboard() {
     change: '+18% vs last month'
   }, {
     label: 'Total Users',
-    value: mockAdminUsers.length,
+    value: users.length,
     icon: UsersIcon,
     color: '#E69D03',
     change: '+5 this month'
   }];
+  if (loading) {
+    return <div className="text-center py-20 text-[#AAAAAA]">Loading dashboard...</div>;
+  }
+
   return <div className="space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
