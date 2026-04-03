@@ -6,12 +6,14 @@ import com.ceylonmango.model.Product;
 import com.ceylonmango.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -49,6 +51,7 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional
     public ProductDto createProduct(ProductRequest request) {
         Product product = Product.builder()
                 .name(request.getName())
@@ -69,6 +72,7 @@ public class ProductService {
         return ProductDto.fromEntity(saved);
     }
 
+    @Transactional
     public ProductDto updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
@@ -92,6 +96,7 @@ public class ProductService {
         return ProductDto.fromEntity(saved);
     }
 
+    @Transactional
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Product not found with id: " + id);

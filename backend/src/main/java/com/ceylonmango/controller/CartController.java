@@ -7,6 +7,7 @@ import com.ceylonmango.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,17 +20,20 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
+    @Transactional(readOnly = true)
     public ResponseEntity<List<CartItemDto>> getCart() {
         return ResponseEntity.ok(cartService.getCartItems());
     }
 
     @PostMapping("/add")
+    @Transactional
     public ResponseEntity<CartItemDto> addToCart(@Valid @RequestBody CartRequest request) {
         return ResponseEntity.ok(
                 cartService.addToCart(request.getProductId(), request.getQuantity()));
     }
 
     @PutMapping("/update")
+    @Transactional
     public ResponseEntity<CartItemDto> updateCartItem(@Valid @RequestBody CartRequest request) {
         CartItemDto updated = cartService.updateCartItem(
                 request.getProductId(), request.getQuantity());

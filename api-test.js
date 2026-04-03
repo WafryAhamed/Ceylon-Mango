@@ -145,9 +145,9 @@ const runTests = async () => {
   }
 
   // Get product by ID
-  log.test('Fetching product by ID (1)');
+  log.test('Fetching product by ID (9)');
   totalTests++;
-  response = await testAPI('GET', '/products/1');
+  response = await testAPI('GET', '/products/9');
 
   if (response.status === 200 && response.data.id) {
     log.success(`Got product: ${response.data.name}`);
@@ -188,7 +188,7 @@ const runTests = async () => {
     log.test('Adding product to cart');
     totalTests++;
     response = await testAPI('POST', '/cart/add', {
-      productId: 1,
+      productId: 9,
       quantity: 2
     }, customerToken);
 
@@ -203,7 +203,7 @@ const runTests = async () => {
     log.test('Updating cart quantity');
     totalTests++;
     response = await testAPI('PUT', '/cart/update', {
-      productId: 1,
+      productId: 9,
       quantity: 3
     }, customerToken);
 

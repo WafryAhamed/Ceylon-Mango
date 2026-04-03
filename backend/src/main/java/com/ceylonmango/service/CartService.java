@@ -28,6 +28,7 @@ public class CartService {
                 .toList();
     }
 
+    @Transactional
     public CartItemDto addToCart(Long productId, int quantity) {
         User user = authService.getCurrentUser();
         Product product = productRepository.findById(productId)
@@ -52,6 +53,7 @@ public class CartService {
         return CartItemDto.fromEntity(saved);
     }
 
+    @Transactional
     public CartItemDto updateCartItem(Long productId, int quantity) {
         User user = authService.getCurrentUser();
         CartItem cartItem = cartItemRepository.findByUserIdAndProductId(

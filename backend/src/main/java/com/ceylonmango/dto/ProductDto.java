@@ -3,6 +3,7 @@ package com.ceylonmango.dto;
 import com.ceylonmango.model.Product;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -24,6 +25,12 @@ public class ProductDto {
     private Integer sales;
 
     public static ProductDto fromEntity(Product product) {
+        // Explicitly materialize the images collection to avoid lazy loading outside transaction
+        List<String> imagesList = new ArrayList<>();
+        if (product.getImages() != null) {
+            imagesList.addAll(product.getImages());
+        }
+        
         return ProductDto.builder()
                 .id(String.valueOf(product.getId()))
                 .name(product.getName())
@@ -31,7 +38,7 @@ public class ProductDto {
                 .price(product.getPrice() != null ? product.getPrice().doubleValue() : 0.0)
                 .originalPrice(product.getOriginalPrice() != null ? product.getOriginalPrice().doubleValue() : null)
                 .image(product.getImageUrl())
-                .images(product.getImages())
+                .images(imagesList)
                 .category(product.getCategory())
                 .weight(product.getWeight())
                 .stock(product.getStock())
