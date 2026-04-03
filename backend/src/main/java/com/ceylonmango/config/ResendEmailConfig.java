@@ -1,22 +1,32 @@
 package com.ceylonmango.config;
 
-import com.resend.Resend;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration class for Resend email service.
- * Initializes the Resend client with API key from application properties.
+ * Holds Resend API configuration properties.
  */
 @Configuration
+@ConfigurationProperties(prefix = "app.resend")
 public class ResendEmailConfig {
 
-    @Value("${app.resend.api-key}")
-    private String resendApiKey;
+    private String apiKey;
+    private String fromEmail;
 
-    @Bean
-    public Resend resend() {
-        return new Resend(resendApiKey);
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getFromEmail() {
+        return fromEmail;
+    }
+
+    public void setFromEmail(String fromEmail) {
+        this.fromEmail = fromEmail;
     }
 }

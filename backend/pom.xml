@@ -18,7 +18,7 @@
     <description>Backend API for Ceylon Mango E-commerce Platform</description>
 
     <properties>
-        <java.version>25</java.version>
+        <java.version>23</java.version>
         <jjwt.version>0.12.5</jjwt.version>
     </properties>
 
@@ -72,13 +72,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-
-        <!-- Resend Email Service -->
-        <dependency>
-            <groupId>com.resend</groupId>
-            <artifactId>resend-java</artifactId>
-            <version>2.5.0</version>
         </dependency>
 
         <!-- Testing -->

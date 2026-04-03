@@ -1,11 +1,14 @@
 package com.ceylonmango.service;
 
-import com.resend.Resend;
-import com.resend.core.exception.ResendException;
+import com.ceylonmango.config.ResendEmailConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +21,10 @@ import java.util.Map;
 @Slf4j
 public class EmailService {
 
-    private final Resend resend;
+    private static final String RESEND_API_URL = "https://api.resend.com/emails";
+    
+    private final RestTemplate restTemplate;
+    private final ResendEmailConfig resendConfig;
 
     @Value("${app.email.from}")
     private String fromEmail;
@@ -33,8 +39,9 @@ public class EmailService {
     private String contactEmail;
 
     @Autowired
-    public EmailService(Resend resend) {
-        this.resend = resend;
+    public EmailService(ResendEmailConfig resendConfig) {
+        this.resendConfig = resendConfig;
+        this.restTemplate = new RestTemplate();
     }
 
     /**
@@ -100,16 +107,33 @@ public class EmailService {
     }
 
     /**
-     * Internal method to send email via Resend API
+     * Internal method to send email via Resend API using RestTemplate
      */
-    private void sendEmail(String toEmail, String subject, String htmlContent) throws ResendException {
-        Map<String, Object> params = new HashMap<>();
-        params.put("from", fromEmail);
-        params.put("to", toEmail);
-        params.put("subject", subject);
-        params.put("html", htmlContent);
+    private void sendEmail(String toEmail, String subject, String htmlContent) {
+        try {
+            if (resendConfig.getApiKey() == null || resendConfig.getApiKey().isEmpty()) {
+                log.warn("Resend API key not configured. Email not sent to {}", toEmail);
+                return;
+            }
 
-        resend.emails().send(params);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + resendConfig.getApiKey());
+
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("from", fromEmail);
+            payload.put("to", toEmail);
+            payload.put("subject", subject);
+            payload.put("html", htmlContent);
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            
+            Map response = restTemplate.postForObject(RESEND_API_URL, request, Map.class);
+            log.info("Email sent successfully to {} - Response: {}", toEmail, response);
+            
+        } catch (Exception e) {
+            log.error("Error sending email via Resend API to {}: {}", toEmail, e.getMessage(), e);
+        }
     }
 
     /**
@@ -132,7 +156,6 @@ public class EmailService {
                     .label { font-weight: bold; color: #555; }
                     .value { color: #333; }
                     .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
-                    .button { display: inline-block; background: #EFB806; color: #333; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; font-weight: bold; }
                 </style>
             </head>
             <body>
