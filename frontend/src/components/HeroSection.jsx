@@ -172,19 +172,13 @@ export function HeroSection() {
           </motion.div>
 
           {/* Mango Image */}
-          <div className="order-1 lg:order-2 flex justify-center items-center relative">
-            {/* Glow behind mango */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-72 h-72 md:w-96 md:h-96 rounded-full bg-[#EFB806]/30 blur-3xl" />
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-[#D37E05]/25 blur-2xl" />
-            </div>
-            {/* Extra glow for premium effect */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-80 h-80 md:w-[480px] md:h-[480px] rounded-full bg-gradient-to-b from-[#EFB806]/10 via-transparent to-transparent blur-3xl opacity-60" />
-            </div>
+          <div className="order-1 lg:order-2 relative flex justify-center items-center h-[600px] md:h-[700px]">
+            {/* Glow layers - Behind (z-0) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 rounded-full bg-[#EFB806]/30 blur-3xl z-0" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 rounded-full bg-[#D37E05]/25 blur-2xl z-0" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-[480px] md:h-[480px] rounded-full bg-gradient-to-b from-[#EFB806]/10 via-transparent to-transparent blur-3xl opacity-60 z-0" />
 
+            {/* Image Container - Front (z-10) */}
             <motion.div style={{
             y: mangoY
           }} animate={{
@@ -194,7 +188,7 @@ export function HeroSection() {
             duration: 6,
             repeat: Infinity,
             ease: 'easeInOut'
-          }} className="relative z-10">
+          }} className="relative z-10 flex items-center justify-center">
               
               <motion.div initial={{
               opacity: 0,
@@ -206,33 +200,38 @@ export function HeroSection() {
               duration: 0.8,
               delay: 0.3,
               ease: 'easeOut'
-            }}>
+            }} className="relative">
+                {/* White circle background */}
+                <div className="absolute inset-0 w-72 h-72 md:w-[420px] md:h-[420px] bg-white/95 rounded-full shadow-2xl shadow-[#EFB806]/30 flex items-center justify-center z-0" />
                 
-                <picture>
+                {/* Mango Image - Centered */}
+                <picture className="relative z-10">
                   <source 
                     srcSet="https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=600&q=80 600w, https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=1000&q=85 1000w"
-                    sizes="(max-width: 768px) 70vw, 420px"
+                    sizes="(max-width: 768px) 280px, 340px"
                   />
                   <source 
                     srcSet="https://images.pexels.com/photos/5632652/pexels-photo-5632652.jpeg?w=600 600w, https://images.pexels.com/photos/5632652/pexels-photo-5632652.jpeg?w=1000 1000w"
-                    sizes="(max-width: 768px) 70vw, 420px"
+                    sizes="(max-width: 768px) 280px, 340px"
                   />
                   <img 
                     src="https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=800&q=85" 
                     alt="Premium Golden Mango - Fresh Organic Sri Lankan Fruit" 
-                    className="w-72 h-72 md:w-[420px] md:h-[420px] object-cover rounded-full mango-glow mango-hero transition-all duration-500" 
+                    className="w-64 h-64 md:w-[340px] md:h-[340px] object-contain drop-shadow-2xl transition-all duration-500 hover:scale-105 relative z-10" 
                     style={{
-                      filter: 'drop-shadow(0 0 50px rgba(239,184,6,0.5)) saturate(1.1)',
-                      boxShadow: '0 25px 80px rgba(239,184,6,0.4), inset 0 0 30px rgba(255,255,255,0.1)',
+                      filter: 'drop-shadow(0 0 30px rgba(239,184,6,0.4))',
                     }}
                     loading="eager"
                     decoding="async"
+                    onError={(e) => {
+                      e.target.src = 'https://images.pexels.com/photos/5632652/pexels-photo-5632652.jpeg?w=800';
+                    }}
                   />
                 </picture>
                 
               </motion.div>
 
-              {/* Floating badge */}
+              {/* Floating badge - Rating */}
               <motion.div initial={{
               opacity: 0,
               x: 30
@@ -241,12 +240,13 @@ export function HeroSection() {
               x: 0
             }} transition={{
               delay: 1
-            }} className="absolute -right-4 top-8 glass rounded-2xl px-4 py-3 border border-[#EFB806]/20">
+            }} className="absolute -right-8 top-20 glass rounded-2xl px-4 py-3 border border-[#EFB806]/20 z-20">
                 
                 <div className="text-[#EFB806] font-bold text-lg">4.9 ⭐</div>
                 <div className="text-[#F5F5F5]/60 text-xs">234 Reviews</div>
               </motion.div>
 
+              {/* Floating badge - Organic */}
               <motion.div initial={{
               opacity: 0,
               x: -30
@@ -255,7 +255,7 @@ export function HeroSection() {
               x: 0
             }} transition={{
               delay: 1.2
-            }} className="absolute -left-4 bottom-12 glass rounded-2xl px-4 py-3 border border-[#3B653D]/30">
+            }} className="absolute -left-8 bottom-24 glass rounded-2xl px-4 py-3 border border-[#3B653D]/30 z-20">
                 
                 <div className="text-[#3B653D] font-bold text-sm">
                   🌿 100% Organic
