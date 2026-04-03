@@ -175,10 +175,14 @@ export function HeroSection() {
           <div className="order-1 lg:order-2 flex justify-center items-center relative">
             {/* Glow behind mango */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-72 h-72 md:w-96 md:h-96 rounded-full bg-[#EFB806]/20 blur-3xl" />
+              <div className="w-72 h-72 md:w-96 md:h-96 rounded-full bg-[#EFB806]/30 blur-3xl" />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-[#D37E05]/15 blur-2xl" />
+              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-[#D37E05]/25 blur-2xl" />
+            </div>
+            {/* Extra glow for premium effect */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-80 h-80 md:w-[480px] md:h-[480px] rounded-full bg-gradient-to-b from-[#EFB806]/10 via-transparent to-transparent blur-3xl opacity-60" />
             </div>
 
             <motion.div style={{
@@ -204,9 +208,17 @@ export function HeroSection() {
               ease: 'easeOut'
             }}>
                 
-                <img src="https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&h=800&fit=crop" alt="Premium Ceylon Mango" className="w-72 h-72 md:w-[420px] md:h-[420px] object-cover rounded-full mango-glow" style={{
-                filter: 'drop-shadow(0 0 40px rgba(239,184,6,0.4))'
-              }} />
+                <img 
+                  src="https://images.unsplash.com/photo-1599599810748-59203fe2c393?w=800&h=800&fit=crop&q=80" 
+                  srcSet="https://images.unsplash.com/photo-1555631894-3f0ba1bfa0f1?w=400&h=400&fit=crop&q=80 400w, https://images.unsplash.com/photo-1599599810748-59203fe2c393?w=800&h=800&fit=crop&q=80 800w"
+                  alt="Premium Sri Lankan Karthakolomban Mango" 
+                  className="w-72 h-72 md:w-[420px] md:h-[420px] object-cover rounded-full mango-glow" 
+                  style={{
+                    filter: 'drop-shadow(0 0 40px rgba(239,184,6,0.4))',
+                    boxShadow: '0 20px 60px rgba(239,184,6,0.3)'
+                  }}
+                  loading="eager"
+                />
                 
               </motion.div>
 
