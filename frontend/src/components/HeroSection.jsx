@@ -208,17 +208,27 @@ export function HeroSection() {
               ease: 'easeOut'
             }}>
                 
-                <img 
-                  src="https://images.unsplash.com/photo-1599599810748-59203fe2c393?w=800&h=800&fit=crop&q=80" 
-                  srcSet="https://images.unsplash.com/photo-1555631894-3f0ba1bfa0f1?w=400&h=400&fit=crop&q=80 400w, https://images.unsplash.com/photo-1599599810748-59203fe2c393?w=800&h=800&fit=crop&q=80 800w"
-                  alt="Premium Sri Lankan Karthakolomban Mango" 
-                  className="w-72 h-72 md:w-[420px] md:h-[420px] object-cover rounded-full mango-glow" 
-                  style={{
-                    filter: 'drop-shadow(0 0 40px rgba(239,184,6,0.4))',
-                    boxShadow: '0 20px 60px rgba(239,184,6,0.3)'
-                  }}
-                  loading="eager"
-                />
+                <picture>
+                  <source 
+                    srcSet="https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=600&q=80 600w, https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=1000&q=85 1000w"
+                    sizes="(max-width: 768px) 70vw, 420px"
+                  />
+                  <source 
+                    srcSet="https://images.pexels.com/photos/5632652/pexels-photo-5632652.jpeg?w=600 600w, https://images.pexels.com/photos/5632652/pexels-photo-5632652.jpeg?w=1000 1000w"
+                    sizes="(max-width: 768px) 70vw, 420px"
+                  />
+                  <img 
+                    src="https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=800&q=85" 
+                    alt="Premium Golden Mango - Fresh Organic Sri Lankan Fruit" 
+                    className="w-72 h-72 md:w-[420px] md:h-[420px] object-cover rounded-full mango-glow mango-hero transition-all duration-500" 
+                    style={{
+                      filter: 'drop-shadow(0 0 50px rgba(239,184,6,0.5)) saturate(1.1)',
+                      boxShadow: '0 25px 80px rgba(239,184,6,0.4), inset 0 0 30px rgba(255,255,255,0.1)',
+                    }}
+                    loading="eager"
+                    decoding="async"
+                  />
+                </picture>
                 
               </motion.div>
 

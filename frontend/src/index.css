@@ -56,7 +56,35 @@ body {
 /* Glow effect utility */
 .mango-glow {
   box-shadow: 0 0 30px rgba(239, 184, 6, 0.3), 0 0 60px rgba(239, 184, 6, 0.1);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.mango-glow:hover {
+  box-shadow: 0 0 60px rgba(239, 184, 6, 0.5), 0 0 100px rgba(211, 126, 5, 0.3);
+  transform: scale(1.02);
+}
+
+/* Premium mango product styling */
+@keyframes manhoPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 40px rgba(239, 184, 6, 0.3),
+      0 0 80px rgba(239, 184, 6, 0.1),
+      inset 0 0 30px rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    box-shadow: 
+      0 0 60px rgba(239, 184, 6, 0.5),
+      0 0 120px rgba(211, 126, 5, 0.2),
+      inset 0 0 40px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.mango-hero {
+  animation: manhoPulse 6s ease-in-out infinite;
+  filter: drop-shadow(0 0 50px rgba(239, 184, 6, 0.4)) saturate(1.1);
+}
+
 /* Text gradient */
 .text-gradient-mango {
   background: linear-gradient(135deg, #EFB806, #D37E05);
