@@ -64,7 +64,28 @@ export function AuthProvider({ children }) {
   }, []);
 
   if (loading) {
-    return null; // Or a loading spinner — prevents flash of unauthenticated state
+    return (
+      <AuthContext.Provider
+        value={{
+          user: null,
+          isAuthenticated: false,
+          isAdmin: false,
+          loading: true,
+          login: async () => {},
+          adminLogin: async () => {},
+          signup: async () => {},
+          logout: () => {},
+          updateProfile: async () => {},
+        }}
+      >
+        <div className="min-h-screen flex items-center justify-center bg-[#1A1A1A]">
+          <div className="text-center">
+            <span className="text-6xl mb-4 block">🥭</span>
+            <p className="text-[#AAAAAA]">Initializing Ceylon Mango...</p>
+          </div>
+        </div>
+      </AuthContext.Provider>
+    );
   }
 
   return (

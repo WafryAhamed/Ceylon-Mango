@@ -21,9 +21,11 @@ public class JwtTokenProvider {
     private long jwtExpirationMs;
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(
-                java.util.Base64.getEncoder().encodeToString(jwtSecret.getBytes())
-        );
+        byte[] keyBytes = jwtSecret.getBytes();
+        // Ensure minimum 256 bits (32 bytes) for HMAC-SHA256
+        if (keyBytes.length < 32) {
+            throw new IllegalArgumentException("JWT secret must be at least 256 bits (32 bytes) long");
+        }
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

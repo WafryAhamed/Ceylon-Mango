@@ -66,7 +66,6 @@ public class DatabaseInitializer {
             String errorMsg = e.getMessage();
             if (errorMsg.contains("password authentication failed")) {
                 log.error("🔐 PASSWORD AUTHENTICATION FAILED!");
-                log.error("Current password in config: {}", password);
                 log.error("Please verify the password in application.properties matches PostgreSQL");
             }
             throw e;
