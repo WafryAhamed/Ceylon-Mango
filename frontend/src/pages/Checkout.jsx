@@ -167,7 +167,7 @@ export function Checkout() {
                   Payment Method
                 </h2>
 
-                <div className="flex gap-4 mb-6">
+                <div className="flex gap-3 mb-6 flex-wrap">
                   {[{
                   id: 'card',
                   label: 'Credit / Debit Card',
@@ -176,15 +176,21 @@ export function Checkout() {
                   id: 'cod',
                   label: 'Cash on Delivery',
                   icon: TruckIcon
-                }].map(method => <button key={method.id} type="button" onClick={() => setPaymentMethod(method.id)} className={`flex-1 flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 ${paymentMethod === method.id ? 'border-[#EFB806] bg-[#EFB806]/10' : 'border-[#333333] hover:border-[#EFB806]/40'}`}>
+                }, {
+                  id: 'bank',
+                  label: 'Bank Transfer',
+                  icon: CreditCardIcon
+                }, {
+                  id: 'payhere',
+                  label: 'PayHere',
+                  icon: CreditCardIcon
+                }].map(method => <button key={method.id} type="button" onClick={() => setPaymentMethod(method.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all duration-200 text-sm ${paymentMethod === method.id ? 'border-[#EFB806] bg-[#EFB806]/10' : 'border-[#333333] hover:border-[#EFB806]/40'}`}>
                     
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method.id ? 'border-[#EFB806] bg-[#EFB806]' : 'border-[#555555]'}`}>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === method.id ? 'border-[#EFB806] bg-[#EFB806]' : 'border-[#555555]'}`}>
                       
-                        {paymentMethod === method.id && <CheckIcon size={12} className="text-[#1A1A1A]" />}
+                        {paymentMethod === method.id && <CheckIcon size={10} className="text-[#1A1A1A]" />}
                       </div>
-                      <method.icon size={16} className={paymentMethod === method.id ? 'text-[#EFB806]' : 'text-[#AAAAAA]'} />
-                    
-                      <span className={`text-sm font-medium ${paymentMethod === method.id ? 'text-[#EFB806]' : 'text-[#AAAAAA]'}`}>
+                      <span className={`font-medium ${paymentMethod === method.id ? 'text-[#EFB806]' : 'text-[#AAAAAA]'}`}>
                       
                         {method.label}
                       </span>
@@ -229,8 +235,29 @@ export function Checkout() {
                 opacity: 1
               }} className="bg-[#EFB806]/10 border border-[#EFB806]/20 rounded-xl p-4 text-sm text-[#EFB806]">
                   
-                    💰 Pay with cash when your order is delivered. A small COD
-                    fee of $1.50 may apply.
+                    💰 Pay with cash when your order is delivered. A small COD fee may apply.
+                  </motion.div>}
+
+                {paymentMethod === 'bank' && <motion.div initial={{
+                opacity: 0
+              }} animate={{
+                opacity: 1
+              }} className="bg-[#3B653D]/10 border border-[#3B653D]/20 rounded-xl p-4 text-sm text-[#3B653D] space-y-2">
+                  
+                    <p className="font-medium">🏦 Bank Transfer Instructions</p>
+                    <p>Please transfer the amount to:</p>
+                    <p className="font-mono bg-[#1A1A1A] p-2 rounded">Ceylon Mango Trading (Pvt) Ltd</p>
+                    <p>A payment confirmation email will be sent with bank details</p>
+                  </motion.div>}
+
+                {paymentMethod === 'payhere' && <motion.div initial={{
+                opacity: 0
+              }} animate={{
+                opacity: 1
+              }} className="bg-[#D37E05]/10 border border-[#D37E05]/20 rounded-xl p-4 text-sm text-[#D37E05] space-y-2">
+                  
+                    <p className="font-medium">💳 PayHere Payment</p>
+                    <p>You'll be redirected to PayHere for secure payment on the next step</p>
                   </motion.div>}
               </motion.div>
             </div>
@@ -268,7 +295,7 @@ export function Checkout() {
                         </p>
                       </div>
                       <span className="text-[#EFB806] text-sm font-semibold">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        ₨{(item.product.price * item.quantity).toFixed(2)}
                       </span>
                     </div>)}
                 </div>
@@ -277,19 +304,19 @@ export function Checkout() {
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Subtotal</span>
                     <span className="text-[#F5F5F5]">
-                      ${totalPrice.toFixed(2)}
+                      ₨{totalPrice.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Shipping</span>
                     <span className={shipping === 0 ? 'text-[#3B653D]' : 'text-[#F5F5F5]'}>
                       
-                      {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+                      {shipping === 0 ? 'FREE' : `₨${shipping.toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Tax</span>
-                    <span className="text-[#F5F5F5]">${tax.toFixed(2)}</span>
+                    <span className="text-[#F5F5F5]">₨{tax.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -297,7 +324,7 @@ export function Checkout() {
                   <div className="flex justify-between">
                     <span className="text-[#F5F5F5] font-bold">Total</span>
                     <span className="text-[#EFB806] font-bold text-xl">
-                      ${grandTotal.toFixed(2)}
+                      ₨{grandTotal.toFixed(2)}
                     </span>
                   </div>
                 </div>

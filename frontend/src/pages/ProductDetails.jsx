@@ -178,10 +178,10 @@ export function ProductDetails() {
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
               <span className="text-4xl font-bold text-[#EFB806]">
-                ${product.price.toFixed(2)}
+                ₨{product.price.toFixed(2)}
               </span>
               {product.originalPrice && <span className="text-xl text-[#AAAAAA] line-through">
-                  ${product.originalPrice.toFixed(2)}
+                  ₨{product.originalPrice.toFixed(2)}
                 </span>}
               {product.originalPrice && <span className="bg-[#EFB806] text-[#1A1A1A] text-sm font-bold px-3 py-1 rounded-full">
                   {Math.round((product.originalPrice - product.price) / product.originalPrice * 100)}

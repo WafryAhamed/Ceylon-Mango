@@ -80,10 +80,10 @@ export function ProductCard({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-[#EFB806] font-bold text-lg">
-                  ${product.price.toFixed(2)}
+                  ₨{product.price.toFixed(2)}
                 </span>
                 {product.originalPrice && <span className="text-[#AAAAAA] text-sm line-through">
-                    ${product.originalPrice.toFixed(2)}
+                    ₨{product.originalPrice.toFixed(2)}
                   </span>}
               </div>
               <span className="text-[#AAAAAA] text-xs">{product.weight}</span>

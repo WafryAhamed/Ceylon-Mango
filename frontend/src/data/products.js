@@ -4,27 +4,27 @@ import { productApi } from '../api/productApi';
 export const categories = [
   {
     id: 'fresh',
-    name: 'Fresh Mangoes',
+    name: 'Fresh Ceylon Mangoes',
     image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=400&h=300&fit=crop',
-    count: 8,
-  },
-  {
-    id: 'juice',
-    name: 'Mango Juices',
-    image: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=400&h=300&fit=crop',
     count: 5,
   },
   {
+    id: 'juice',
+    name: 'Fresh Mango Juices',
+    image: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=400&h=300&fit=crop',
+    count: 2,
+  },
+  {
     id: 'dried',
-    name: 'Dried Mango',
+    name: 'Dried & Snacks',
     image: 'https://images.unsplash.com/photo-1598790740801-88e1e1e9c0b0?w=400&h=300&fit=crop',
-    count: 4,
+    count: 2,
   },
   {
     id: 'preserves',
-    name: 'Jams & Preserves',
+    name: 'Traditional Preserves',
     image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop',
-    count: 6,
+    count: 4,
   },
 ];
 
