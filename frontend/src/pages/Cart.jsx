@@ -121,23 +121,23 @@ export function Cart() {
                       Subtotal ({totalItems} items)
                     </span>
                     <span className="text-[#F5F5F5]">
-                      ₨{totalPrice.toFixed(2)}
+                      Rs. {totalPrice.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Shipping</span>
                     <span className={shipping === 0 ? 'text-[#3B653D] font-medium' : 'text-[#F5F5F5]'}>
                     
-                      {shipping === 0 ? 'FREE' : `₨${shipping.toFixed(2)}`}
+                      {shipping === 0 ? 'FREE' : `Rs. ${shipping.toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Tax (8%)</span>
-                    <span className="text-[#F5F5F5]">₨{tax.toFixed(2)}</span>
+                    <span className="text-[#F5F5F5]">Rs. {tax.toFixed(2)}</span>
                   </div>
                   {shipping > 0 && <div className="bg-[#EFB806]/10 border border-[#EFB806]/20 rounded-xl p-3 text-xs text-[#EFB806]">
                       <TagIcon size={12} className="inline mr-1" />
-                      Add ₨{(30 - totalPrice).toFixed(2)} more for free
+                      Add Rs. {(30 - totalPrice).toFixed(2)} more for free
                       shipping!
                     </div>}
                 </div>
@@ -148,7 +148,7 @@ export function Cart() {
                       Total
                     </span>
                     <span className="text-[#EFB806] font-bold text-xl">
-                      ₨{grandTotal.toFixed(2)}
+                      Rs. {grandTotal.toFixed(2)}
                     </span>
                   </div>
                 </div>

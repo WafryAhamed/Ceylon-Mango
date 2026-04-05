@@ -295,7 +295,7 @@ export function Checkout() {
                         </p>
                       </div>
                       <span className="text-[#EFB806] text-sm font-semibold">
-                        ₨{(item.product.price * item.quantity).toFixed(2)}
+                        Rs. {(item.product.price * item.quantity).toFixed(2)}
                       </span>
                     </div>)}
                 </div>
@@ -304,19 +304,19 @@ export function Checkout() {
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Subtotal</span>
                     <span className="text-[#F5F5F5]">
-                      ₨{totalPrice.toFixed(2)}
+                      Rs. {totalPrice.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Shipping</span>
                     <span className={shipping === 0 ? 'text-[#3B653D]' : 'text-[#F5F5F5]'}>
                       
-                      {shipping === 0 ? 'FREE' : `₨${shipping.toFixed(2)}`}
+                      {shipping === 0 ? 'FREE' : `Rs. ${shipping.toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Tax</span>
-                    <span className="text-[#F5F5F5]">₨{tax.toFixed(2)}</span>
+                    <span className="text-[#F5F5F5]">Rs. {tax.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -324,7 +324,7 @@ export function Checkout() {
                   <div className="flex justify-between">
                     <span className="text-[#F5F5F5] font-bold">Total</span>
                     <span className="text-[#EFB806] font-bold text-xl">
-                      ₨{grandTotal.toFixed(2)}
+                      Rs. {grandTotal.toFixed(2)}
                     </span>
                   </div>
                 </div>

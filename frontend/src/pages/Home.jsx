@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../components/HeroSection';
@@ -6,8 +6,50 @@ import { FeaturedProducts } from '../components/FeaturedProducts';
 import { WhyChooseUs } from '../components/WhyChooseUs';
 import { CategoryCard } from '../components/CategoryCard';
 import { Footer } from '../components/Footer';
-import { categories } from '../data/products';
+import api from '../api/axios';
+
+const defaultCategories = [
+  {
+    id: 'fresh',
+    name: 'Fresh Ceylon Mangoes',
+    image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=400&h=300&fit=crop',
+    count: 0,
+  },
+  {
+    id: 'juice',
+    name: 'Fresh Mango Juices',
+    image: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=400&h=300&fit=crop',
+    count: 0,
+  },
+  {
+    id: 'dried',
+    name: 'Dried & Snacks',
+    image: 'https://images.unsplash.com/photo-1598790740801-88e1e1e9c0b0?w=400&h=300&fit=crop',
+    count: 0,
+  },
+  {
+    id: 'preserves',
+    name: 'Traditional Preserves',
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop',
+    count: 0,
+  },
+];
+
 export function Home() {
+  const [categories, setCategories] = useState(defaultCategories);
+
+  useEffect(() => {
+    api.get('/products')
+      .then(res => {
+        const products = res.data;
+        setCategories(defaultCategories.map(cat => ({
+          ...cat,
+          count: products.filter(p => p.category === cat.id).length,
+        })));
+      })
+      .catch(err => console.error('Failed to load categories:', err));
+  }, []);
+
   return <div className="min-h-screen w-full bg-[#1A1A1A]">
       <Navbar />
       <HeroSection />

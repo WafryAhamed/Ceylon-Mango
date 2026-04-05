@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchIcon, ChevronDownIcon, ChevronUpIcon, ShoppingCartIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { fetchAdminOrders } from '../data/adminData';
+
 import { orderApi } from '../api/orderApi';
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 const statusColors = {
@@ -50,7 +50,7 @@ function OrderRow({
           {order.items.length} item{order.items.length > 1 ? 's' : ''}
         </td>
         <td className="px-5 py-3 text-[#F5F5F5] text-sm font-semibold">
-          ${order.total.toFixed(2)}
+          Rs. {order.total.toFixed(2)}
         </td>
         <td className="px-5 py-3" onClick={e => e.stopPropagation()}>
           <select value={order.status} onChange={e => onStatusChange(order.id, e.target.value)} className={`text-xs px-2.5 py-1.5 rounded-lg font-semibold capitalize border-0 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#EFB806]/50 ${sc.bg} ${sc.text}`} style={{
@@ -90,7 +90,7 @@ function OrderRow({
                           {item.name} × {item.quantity}
                         </span>
                         <span className="text-[#EFB806]">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          Rs. {(item.price * item.quantity).toFixed(2)}
                         </span>
                       </div>)}
                   </div>
@@ -116,10 +116,15 @@ export function AdminOrders() {
   const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
-    fetchAdminOrders().then(data => {
-      setOrders(data);
-      setLoading(false);
-    });
+    orderApi.getAllOrders()
+      .then(res => {
+        setOrders(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load orders:', err);
+        setLoading(false);
+      });
   }, []);
 
   const filtered = useMemo(() => {

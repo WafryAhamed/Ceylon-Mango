@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PackageIcon, ChevronDownIcon, ChevronUpIcon, ShoppingBagIcon } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { fetchUserOrders } from '../data/orders';
+import api from '../api/axios';
+
 const statusConfig = {
   processing: {
     label: 'Processing',
@@ -31,7 +32,7 @@ function OrderCard({
   order
 }) {
   const [expanded, setExpanded] = useState(false);
-  const status = statusConfig[order.status];
+  const status = statusConfig[order.status] || statusConfig.processing;
   return <motion.div initial={{
     opacity: 0,
     y: 20
@@ -60,7 +61,7 @@ function OrderCard({
         <div className="flex items-center gap-4">
           <div className="text-right">
             <p className="text-[#EFB806] font-bold">
-              ${order.total.toFixed(2)}
+              Rs. {order.total.toFixed(2)}
             </p>
             <span className={`text-xs px-2.5 py-1 rounded-full font-semibold capitalize ${status.bg} ${status.color}`}>
               
@@ -96,11 +97,11 @@ function OrderCard({
                         {item.name}
                       </p>
                       <p className="text-[#AAAAAA] text-xs">
-                        Qty: {item.quantity} × ${item.price.toFixed(2)}
+                        Qty: {item.quantity} × Rs. {item.price.toFixed(2)}
                       </p>
                     </div>
                     <span className="text-[#EFB806] font-semibold text-sm">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      Rs. {(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>)}
               </div>
@@ -126,10 +127,15 @@ export function OrderHistory() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserOrders().then(data => {
-      setOrders(data);
-      setLoading(false);
-    });
+    api.get('/orders/user')
+      .then(res => {
+        setOrders(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load orders:', err);
+        setLoading(false);
+      });
   }, []);
 
   return <div className="min-h-screen w-full bg-[#1A1A1A]">

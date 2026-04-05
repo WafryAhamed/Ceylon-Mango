@@ -6,14 +6,13 @@ com\ceylonmango\dto\OrderDto$OrderItemDto.class
 com\ceylonmango\model\OrderItem.class
 com\ceylonmango\model\User$UserBuilder.class
 com\ceylonmango\dto\OrderDto$OrderDtoBuilder.class
+com\ceylonmango\config\ResendEmailConfig.class
 com\ceylonmango\dto\CartItemDto.class
 com\ceylonmango\CeylonMangoApplication.class
 com\ceylonmango\service\OrderService.class
 com\ceylonmango\service\AuthService.class
 com\ceylonmango\security\CustomUserDetailsService.class
 com\ceylonmango\dto\ProductRequest.class
-com\ceylonmango\config\DatabaseInitializer.class
-com\ceylonmango\config\DataSeeder.class
 com\ceylonmango\config\GlobalExceptionHandler.class
 com\ceylonmango\dto\ApiResponse$ApiResponseBuilder.class
 com\ceylonmango\dto\ProductDto$ProductDtoBuilder.class
@@ -28,8 +27,10 @@ com\ceylonmango\controller\OrderController.class
 com\ceylonmango\controller\CartController.class
 com\ceylonmango\repository\OrderItemRepository.class
 com\ceylonmango\config\CorsConfig.class
+com\ceylonmango\service\EmailService.class
 com\ceylonmango\model\Product.class
 com\ceylonmango\dto\ProductDto.class
+com\ceylonmango\dto\RefreshTokenRequest.class
 com\ceylonmango\security\JwtAuthEntryPoint.class
 com\ceylonmango\dto\AuthResponse.class
 com\ceylonmango\model\User$Role.class

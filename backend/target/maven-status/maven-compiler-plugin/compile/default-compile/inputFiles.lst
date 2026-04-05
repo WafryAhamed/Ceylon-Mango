@@ -1,8 +1,7 @@
 E:\mango\backend\src\main\java\com\ceylonmango\CeylonMangoApplication.java
 E:\mango\backend\src\main\java\com\ceylonmango\config\CorsConfig.java
-E:\mango\backend\src\main\java\com\ceylonmango\config\DatabaseInitializer.java
-E:\mango\backend\src\main\java\com\ceylonmango\config\DataSeeder.java
 E:\mango\backend\src\main\java\com\ceylonmango\config\GlobalExceptionHandler.java
+E:\mango\backend\src\main\java\com\ceylonmango\config\ResendEmailConfig.java
 E:\mango\backend\src\main\java\com\ceylonmango\config\SecurityConfig.java
 E:\mango\backend\src\main\java\com\ceylonmango\controller\AuthController.java
 E:\mango\backend\src\main\java\com\ceylonmango\controller\CartController.java
@@ -19,6 +18,7 @@ E:\mango\backend\src\main\java\com\ceylonmango\dto\OrderDto.java
 E:\mango\backend\src\main\java\com\ceylonmango\dto\OrderRequest.java
 E:\mango\backend\src\main\java\com\ceylonmango\dto\ProductDto.java
 E:\mango\backend\src\main\java\com\ceylonmango\dto\ProductRequest.java
+E:\mango\backend\src\main\java\com\ceylonmango\dto\RefreshTokenRequest.java
 E:\mango\backend\src\main\java\com\ceylonmango\dto\RegisterRequest.java
 E:\mango\backend\src\main\java\com\ceylonmango\dto\UpdateProfileRequest.java
 E:\mango\backend\src\main\java\com\ceylonmango\dto\UserDto.java
@@ -42,6 +42,7 @@ E:\mango\backend\src\main\java\com\ceylonmango\security\JwtAuthEntryPoint.java
 E:\mango\backend\src\main\java\com\ceylonmango\security\JwtTokenProvider.java
 E:\mango\backend\src\main\java\com\ceylonmango\service\AuthService.java
 E:\mango\backend\src\main\java\com\ceylonmango\service\CartService.java
+E:\mango\backend\src\main\java\com\ceylonmango\service\EmailService.java
 E:\mango\backend\src\main\java\com\ceylonmango\service\OrderService.java
 E:\mango\backend\src\main\java\com\ceylonmango\service\ProductService.java
 E:\mango\backend\src\main\java\com\ceylonmango\service\UserService.java

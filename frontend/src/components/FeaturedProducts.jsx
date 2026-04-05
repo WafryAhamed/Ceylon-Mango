@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRightIcon } from 'lucide-react';
 import { ProductCard } from './ProductCard';
-import { fetchFeaturedProducts } from '../data/products';
+import api from '../api/axios';
+
 const containerVariants = {
   hidden: {},
   visible: {
@@ -30,7 +31,9 @@ export function FeaturedProducts() {
   const [featured, setFeatured] = useState([]);
 
   useEffect(() => {
-    fetchFeaturedProducts().then(data => setFeatured(data));
+    api.get('/products/featured')
+      .then(res => setFeatured(res.data))
+      .catch(err => console.error('Failed to load featured products:', err));
   }, []);
 
   return <section className="py-20 bg-[#1A1A1A]">

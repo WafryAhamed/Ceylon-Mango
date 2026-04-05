@@ -5,11 +5,16 @@ import { SearchIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
-import { categories, fetchProducts } from '../data/products';
-const allCategories = [{
-  id: 'all',
-  name: 'All Products'
-}, ...categories];
+import api from '../api/axios';
+
+const categories = [
+  { id: 'all', name: 'All Products' },
+  { id: 'fresh', name: 'Fresh Ceylon Mangoes' },
+  { id: 'juice', name: 'Fresh Mango Juices' },
+  { id: 'dried', name: 'Dried & Snacks' },
+  { id: 'preserves', name: 'Traditional Preserves' },
+];
+
 export function Shop() {
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get('category') || 'all';
@@ -20,10 +25,15 @@ export function Shop() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchProducts().then(data => {
-      setProducts(data);
-      setLoading(false);
-    });
+    api.get('/products')
+      .then(res => {
+        setProducts(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load products:', err);
+        setLoading(false);
+      });
   }, []);
 
   const filtered = React.useMemo(() => {
@@ -129,7 +139,7 @@ export function Shop() {
           delay: 0.4
         }} className="flex gap-2 flex-wrap mb-10">
             
-            {allCategories.map(cat => <motion.button key={cat.id} onClick={() => setActiveCategory(cat.id)} whileHover={{
+            {categories.map(cat => <motion.button key={cat.id} onClick={() => setActiveCategory(cat.id)} whileHover={{
             scale: 1.03
           }} whileTap={{
             scale: 0.97

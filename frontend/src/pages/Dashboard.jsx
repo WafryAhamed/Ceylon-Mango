@@ -5,7 +5,8 @@ import { UserIcon, PackageIcon, HeartIcon, SettingsIcon, LogOutIcon, EditIcon, C
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
-import { fetchUserOrders } from '../data/orders';
+import api from '../api/axios';
+
 const statusColors = {
   processing: 'bg-[#EFB806]/20 text-[#EFB806]',
   shipped: 'bg-blue-500/20 text-blue-400',
@@ -27,8 +28,11 @@ export function Dashboard() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetchUserOrders().then(data => setOrders(data));
+    api.get('/orders/user')
+      .then(res => setOrders(res.data))
+      .catch(err => console.error('Failed to load orders:', err));
   }, []);
+
   const handleSave = () => {
     updateProfile(editForm);
     setEditing(false);
@@ -269,7 +273,7 @@ export function Dashboard() {
                     </div>
                     <div className="text-right">
                       <p className="text-[#EFB806] font-bold">
-                        ${order.total.toFixed(2)}
+                        Rs. {order.total.toFixed(2)}
                       </p>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium capitalize ${statusColors[order.status]}`}>
                       

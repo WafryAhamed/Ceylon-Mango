@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
-import { fetchProductById, fetchProducts } from '../data/products';
+import api from '../api/axios';
 import { useCart } from '../context/CartContext';
 export function ProductDetails() {
   const {
@@ -26,15 +26,24 @@ export function ProductDetails() {
     setLoading(true);
     setSelectedImage(0);
     setQuantity(1);
-    fetchProductById(id).then(p => {
-      setProduct(p);
-      setLoading(false);
-      if (p) {
-        fetchProducts().then(allProducts => {
-          setRelated(allProducts.filter(r => r.category === p.category && r.id !== p.id).slice(0, 4));
-        });
-      }
-    });
+    api.get(`/products/${id}`)
+      .then(res => {
+        const p = res.data;
+        setProduct(p);
+        setLoading(false);
+        if (p) {
+          api.get('/products')
+            .then(allRes => {
+              setRelated(allRes.data.filter(r => r.category === p.category && r.id !== p.id).slice(0, 4));
+            })
+            .catch(err => console.error('Failed to load related products:', err));
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load product:', err);
+        setProduct(null);
+        setLoading(false);
+      });
   }, [id]);
 
   if (loading) {
@@ -178,10 +187,10 @@ export function ProductDetails() {
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
               <span className="text-4xl font-bold text-[#EFB806]">
-                ₨{product.price.toFixed(2)}
+                Rs. {product.price.toFixed(2)}
               </span>
               {product.originalPrice && <span className="text-xl text-[#AAAAAA] line-through">
-                  ₨{product.originalPrice.toFixed(2)}
+                  Rs. {product.originalPrice.toFixed(2)}
                 </span>}
               {product.originalPrice && <span className="bg-[#EFB806] text-[#1A1A1A] text-sm font-bold px-3 py-1 rounded-full">
                   {Math.round((product.originalPrice - product.price) / product.originalPrice * 100)}
@@ -248,7 +257,7 @@ export function ProductDetails() {
               {[{
               icon: TruckIcon,
               label: 'Free Delivery',
-              sub: 'Orders over $30'
+              sub: 'Orders over Rs. 5000'
             }, {
               icon: ShieldCheckIcon,
               label: 'Quality Assured',

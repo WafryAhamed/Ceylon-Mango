@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlusIcon, SearchIcon, EditIcon, Trash2Icon, PackageIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { fetchAdminProducts } from '../data/adminData';
+
 import { productApi } from '../api/productApi';
 import { ConfirmModal } from './components/ConfirmModal';
 import { AdminProductModal } from './components/AdminProductModal';
@@ -25,10 +25,15 @@ export function AdminProducts() {
   const [filterCategory, setFilterCategory] = useState('all');
 
   useEffect(() => {
-    fetchAdminProducts().then(data => {
-      setProducts(data);
-      setLoading(false);
-    });
+    productApi.getAll()
+      .then(res => {
+        setProducts(res.data.map(p => ({ ...p, stock: p.stock || 0, sales: p.sales || 0 })));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load products:', err);
+        setLoading(false);
+      });
   }, []);
   const [productModal, setProductModal] = useState({
     open: false,
@@ -199,7 +204,7 @@ export function AdminProducts() {
                       </span>
                     </td>
                     <td className="px-5 py-3 text-[#EFB806] text-sm font-semibold">
-                      ${product.price.toFixed(2)}
+                      Rs. {product.price.toFixed(2)}
                     </td>
                     <td className="px-5 py-3 text-[#AAAAAA] text-sm">
                       {product.stock}

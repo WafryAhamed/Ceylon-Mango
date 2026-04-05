@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { PackageIcon, ShoppingCartIcon, DollarSignIcon, UsersIcon, TrendingUpIcon, ArrowUpRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { fetchAdminProducts, fetchAdminOrders, fetchAdminUsers } from '../data/adminData';
+import { productApi } from '../api/productApi';
+import { orderApi } from '../api/orderApi';
+import { userApi } from '../api/userApi';
+
 const statusColors = {
   pending: {
     bg: 'bg-[#EFB806]/20',
@@ -33,19 +36,22 @@ export function AdminDashboard() {
 
   useEffect(() => {
     Promise.all([
-      fetchAdminProducts(),
-      fetchAdminOrders(),
-      fetchAdminUsers()
+      productApi.getAll().then(res => res.data.map(p => ({ ...p, stock: p.stock || 0, sales: p.sales || 0 }))),
+      orderApi.getAllOrders().then(res => res.data),
+      userApi.getAll().then(res => res.data)
     ]).then(([pData, oData, uData]) => {
       setProducts(pData);
       setOrders(oData);
       setUsers(uData);
       setLoading(false);
+    }).catch(err => {
+      console.error('Failed to load admin dashboard data:', err);
+      setLoading(false);
     });
   }, []);
 
-  const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
-  const recentOrders = [...orders].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const recentOrders = [...orders].sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 5);
   const stats = [{
     label: 'Total Products',
     value: products.length,
@@ -60,7 +66,7 @@ export function AdminDashboard() {
     change: '+12 this week'
   }, {
     label: 'Total Revenue',
-    value: `$${totalRevenue.toFixed(2)}`,
+    value: `Rs. ${totalRevenue.toFixed(2)}`,
     icon: DollarSignIcon,
     color: '#D37E05',
     change: '+18% vs last month'
@@ -150,7 +156,7 @@ export function AdminDashboard() {
               </thead>
               <tbody>
                 {recentOrders.map(order => {
-                const sc = statusColors[order.status];
+                const sc = statusColors[order.status] || statusColors.pending;
                 return <tr key={order.id} className="border-b border-[#333333]/50 hover:bg-[#2A2A2A] transition-colors">
                       
                       <td className="px-5 py-3 text-[#EFB806] text-sm font-mono font-medium">
@@ -168,7 +174,7 @@ export function AdminDashboard() {
                         {order.date}
                       </td>
                       <td className="px-5 py-3 text-[#F5F5F5] text-sm font-semibold">
-                        ${order.total.toFixed(2)}
+                        Rs. {(order.total || 0).toFixed(2)}
                       </td>
                       <td className="px-5 py-3">
                         <span className={`text-xs px-2.5 py-1 rounded-full font-semibold capitalize ${sc.bg} ${sc.text}`}>
@@ -203,7 +209,7 @@ export function AdminDashboard() {
               Top Products
             </h3>
             <div className="space-y-3">
-              {[...mockAdminProducts].sort((a, b) => b.sales - a.sales).slice(0, 5).map((p, i) => <div key={p.id} className="flex items-center gap-3">
+              {[...products].sort((a, b) => b.sales - a.sales).slice(0, 5).map((p, i) => <div key={p.id} className="flex items-center gap-3">
                     <span className="text-[#555555] text-xs font-mono w-4">
                       {i + 1}
                     </span>
@@ -216,7 +222,7 @@ export function AdminDashboard() {
                       <p className="text-[#555555] text-xs">{p.sales} sales</p>
                     </div>
                     <span className="text-[#EFB806] text-sm font-semibold">
-                      ${p.price}
+                      Rs. {p.price}
                     </span>
                   </div>)}
             </div>
@@ -232,8 +238,8 @@ export function AdminDashboard() {
             </h3>
             <div className="space-y-2">
               {['pending', 'processing', 'shipped', 'delivered', 'cancelled'].map(status => {
-              const count = mockAdminOrders.filter(o => o.status === status).length;
-              const pct = count / mockAdminOrders.length * 100;
+              const count = orders.filter(o => o.status === status).length;
+              const pct = orders.length > 0 ? (count / orders.length * 100) : 0;
               const sc = statusColors[status];
               return <div key={status} className="flex items-center gap-3">
                     <span className={`text-xs capitalize font-medium w-20 ${sc.text}`}>
@@ -248,7 +254,7 @@ export function AdminDashboard() {
                   }} transition={{
                     delay: 0.5,
                     duration: 0.6
-                  }} className={`h-full rounded-full ${sc.bg.replace('/20', '')}`} style={{
+                  }} className={`h-full rounded-full`} style={{
                     backgroundColor: sc.text.includes('EFB806') ? '#EFB806' : sc.text.includes('blue') ? '#3b82f6' : sc.text.includes('purple') ? '#a855f7' : sc.text.includes('3B653D') ? '#3B653D' : '#ef4444'
                   }} />
                       

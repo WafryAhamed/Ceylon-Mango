@@ -5,6 +5,7 @@ import com.ceylonmango.model.User;
 import com.ceylonmango.repository.UserRepository;
 import com.ceylonmango.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,12 +14,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
+    private final EmailService emailService;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -35,7 +38,15 @@ public class AuthService {
         userRepository.save(user);
 
         String token = tokenProvider.generateTokenFromEmail(user.getEmail());
-        return new AuthResponse(token, UserDto.fromEntity(user));
+        String refreshToken = tokenProvider.generateRefreshToken(user.getEmail());
+
+        try {
+            emailService.sendVerificationEmail(user.getEmail(), user.getName(), "http://localhost:5173/verify");
+        } catch (Exception e) {
+            log.error("Failed to send verification email: {}", e.getMessage());
+        }
+
+        return new AuthResponse(token, refreshToken, UserDto.fromEntity(user));
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -51,7 +62,8 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return new AuthResponse(token, UserDto.fromEntity(user));
+        String refreshToken = tokenProvider.generateRefreshToken(user.getEmail());
+        return new AuthResponse(token, refreshToken, UserDto.fromEntity(user));
     }
 
     public AuthResponse adminLogin(AuthRequest request) {
@@ -65,6 +77,21 @@ public class AuthService {
         }
 
         return response;
+    }
+
+    public AuthResponse refreshToken(RefreshTokenRequest request) {
+        String refreshToken = request.getRefreshToken();
+        if (tokenProvider.validateToken(refreshToken)) {
+            String email = tokenProvider.getEmailFromToken(refreshToken);
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            String newToken = tokenProvider.generateTokenFromEmail(email);
+            String newRefreshToken = tokenProvider.generateRefreshToken(email);
+            
+            return new AuthResponse(newToken, newRefreshToken, UserDto.fromEntity(user));
+        }
+        throw new RuntimeException("Invalid refresh token");
     }
 
     public User getCurrentUser() {

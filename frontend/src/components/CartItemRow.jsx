@@ -37,7 +37,7 @@ export function CartItemRow({
         </h3>
         <p className="text-[#AAAAAA] text-sm mt-0.5">{item.product.weight}</p>
         <p className="text-[#EFB806] font-bold mt-1">
-          ₨{item.product.price.toFixed(2)}
+          Rs. {item.product.price.toFixed(2)}
         </p>
       </div>
 
@@ -68,7 +68,7 @@ export function CartItemRow({
       {/* Line Total */}
       <div className="text-right min-w-[70px]">
         <p className="text-[#EFB806] font-bold text-base">
-          ₨{(item.product.price * item.quantity).toFixed(2)}
+          Rs. {(item.product.price * item.quantity).toFixed(2)}
         </p>
       </div>
 

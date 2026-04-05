@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchIcon, Trash2Icon, UsersIcon, ShieldIcon, UserIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { fetchAdminUsers } from '../data/adminData';
+
 import { userApi } from '../api/userApi';
 import { ConfirmModal } from './components/ConfirmModal';
 export function AdminUsers() {
@@ -12,10 +12,15 @@ export function AdminUsers() {
   const [filterRole, setFilterRole] = useState('all');
 
   useEffect(() => {
-    fetchAdminUsers().then(data => {
-      setUsers(data);
-      setLoading(false);
-    });
+    userApi.getAll()
+      .then(res => {
+        setUsers(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load users:', err);
+        setLoading(false);
+      });
   }, []);
 
   const [deleteModal, setDeleteModal] = useState({
@@ -168,7 +173,7 @@ export function AdminUsers() {
                       {user.orders}
                     </td>
                     <td className="px-5 py-3 text-[#EFB806] text-sm font-semibold">
-                      ${user.totalSpent.toFixed(2)}
+                      Rs. {user.totalSpent.toFixed(2)}
                     </td>
                     <td className="px-5 py-3">
                       <button onClick={() => setDeleteModal({
