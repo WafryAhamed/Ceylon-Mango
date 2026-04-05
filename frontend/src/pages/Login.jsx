@@ -35,6 +35,9 @@ export function Login() {
         toast.success('Account created! Welcome to Ceylon Mango 🥭');
       }
       navigate('/dashboard');
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message || 'Authentication failed. Please try again.';
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

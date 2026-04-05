@@ -5,7 +5,7 @@ import { ShieldIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon } from 'lucide-reac
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
 export function AdminLogin() {
-  const [email, setEmail] = useState('admin@ceylonmango.lk');
+  const [email, setEmail] = useState('nimal.perera.lk@gmail.com');
   const [password, setPassword] = useState('admin123');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,6 +20,9 @@ export function AdminLogin() {
       await adminLogin(email, password);
       toast.success('Welcome to Admin Panel 🥭');
       navigate('/admin');
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message || 'Admin login failed. Please check credentials.';
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

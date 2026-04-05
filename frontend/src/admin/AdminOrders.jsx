@@ -138,7 +138,9 @@ export function AdminOrders() {
   }, [orders, search, filterStatus]);
   const handleStatusChange = async (id, status) => {
     try {
-      await orderApi.updateOrderStatus(id, status);
+      // Extract numeric ID from formatted string (e.g., "ORD-001" → 1)
+      const numericId = id.replace(/\D/g, '');
+      await orderApi.updateOrderStatus(numericId, status);
       setOrders(prev => prev.map(o => o.id === id ? {
         ...o,
         status

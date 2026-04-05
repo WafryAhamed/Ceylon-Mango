@@ -22,10 +22,10 @@ export function CartProvider({ children }) {
   const addToCart = useCallback((product, quantity = 1) => {
     // Optimistic local update
     setItems(prev => {
-      const existing = prev.find(item => item.product.id === product.id);
+      const existing = prev.find(item => String(item.product.id) === String(product.id));
       if (existing) {
         return prev.map(item =>
-          item.product.id === product.id
+          String(item.product.id) === String(product.id)
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -41,7 +41,7 @@ export function CartProvider({ children }) {
   }, [isAuthenticated]);
 
   const removeFromCart = useCallback((productId) => {
-    setItems(prev => prev.filter(item => item.product.id !== productId));
+    setItems(prev => prev.filter(item => String(item.product.id) !== String(productId)));
 
     if (isAuthenticated) {
       const pid = typeof productId === 'string' ? parseInt(productId) : productId;
@@ -51,7 +51,7 @@ export function CartProvider({ children }) {
 
   const updateQuantity = useCallback((productId, quantity) => {
     if (quantity <= 0) {
-      setItems(prev => prev.filter(item => item.product.id !== productId));
+      setItems(prev => prev.filter(item => String(item.product.id) !== String(productId)));
       if (isAuthenticated) {
         const pid = typeof productId === 'string' ? parseInt(productId) : productId;
         cartApi.removeFromCart(pid).catch(() => {});
@@ -60,7 +60,7 @@ export function CartProvider({ children }) {
     }
     setItems(prev =>
       prev.map(item =>
-        item.product.id === productId ? { ...item, quantity } : item
+        String(item.product.id) === String(productId) ? { ...item, quantity } : item
       )
     );
 

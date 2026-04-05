@@ -52,30 +52,32 @@ export function AdminDashboard() {
 
   const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
   const recentOrders = [...orders].sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 5);
+  const pendingOrders = orders.filter(o => o.status === 'pending').length;
+  const deliveredOrders = orders.filter(o => o.status === 'delivered').length;
   const stats = [{
     label: 'Total Products',
     value: products.length,
     icon: PackageIcon,
     color: '#EFB806',
-    change: '+3 this month'
+    change: `${products.filter(p => p.inStock).length} in stock`
   }, {
     label: 'Total Orders',
     value: orders.length,
     icon: ShoppingCartIcon,
     color: '#3B653D',
-    change: '+12 this week'
+    change: `${pendingOrders} pending`
   }, {
     label: 'Total Revenue',
     value: `Rs. ${totalRevenue.toFixed(2)}`,
     icon: DollarSignIcon,
     color: '#D37E05',
-    change: '+18% vs last month'
+    change: `${deliveredOrders} delivered`
   }, {
     label: 'Total Users',
     value: users.length,
     icon: UsersIcon,
     color: '#E69D03',
-    change: '+5 this month'
+    change: `${users.filter(u => u.role === 'admin').length} admins`
   }];
   if (loading) {
     return <div className="text-center py-20 text-[#AAAAAA]">Loading dashboard...</div>;

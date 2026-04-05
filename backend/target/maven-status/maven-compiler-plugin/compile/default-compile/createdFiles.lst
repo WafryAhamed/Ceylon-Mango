@@ -19,6 +19,7 @@ com\ceylonmango\dto\ProductDto$ProductDtoBuilder.class
 com\ceylonmango\controller\WishlistController.class
 com\ceylonmango\security\JwtAuthenticationFilter.class
 com\ceylonmango\model\WishlistItem$WishlistItemBuilder.class
+com\ceylonmango\config\CorsConfig$1.class
 com\ceylonmango\controller\ProductController.class
 com\ceylonmango\dto\WishlistRequest.class
 com\ceylonmango\dto\WishlistDto.class

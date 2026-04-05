@@ -30,8 +30,8 @@ export function Checkout() {
     cardCvv: '',
     cardName: ''
   });
-  const shipping = totalPrice > 30 ? 0 : 4.99;
-  const tax = totalPrice * 0.08;
+  const shipping = totalPrice > 5000 ? 0 : 350;
+  const tax = 0;
   const grandTotal = totalPrice + shipping + tax;
   const update = field => e => setForm(prev => ({
     ...prev,
@@ -316,7 +316,7 @@ export function Checkout() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#AAAAAA]">Tax</span>
-                    <span className="text-[#F5F5F5]">Rs. {tax.toFixed(2)}</span>
+                    <span className="text-[#3B653D]">Rs. 0.00 (Food exempt)</span>
                   </div>
                 </div>
 

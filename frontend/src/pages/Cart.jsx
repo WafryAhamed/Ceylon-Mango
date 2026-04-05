@@ -14,8 +14,8 @@ export function Cart() {
     clearCart
   } = useCart();
   const navigate = useNavigate();
-  const shipping = totalPrice > 30 ? 0 : 4.99;
-  const tax = totalPrice * 0.08;
+  const shipping = totalPrice > 5000 ? 0 : 350;
+  const tax = 0;
   const grandTotal = totalPrice + shipping + tax;
   return <div className="min-h-screen w-full bg-[#1A1A1A]">
       <Navbar />
@@ -132,12 +132,12 @@ export function Cart() {
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#AAAAAA]">Tax (8%)</span>
-                    <span className="text-[#F5F5F5]">Rs. {tax.toFixed(2)}</span>
+                    <span className="text-[#AAAAAA]">Tax</span>
+                    <span className="text-[#3B653D] font-medium">Rs. 0.00 (Food exempt)</span>
                   </div>
                   {shipping > 0 && <div className="bg-[#EFB806]/10 border border-[#EFB806]/20 rounded-xl p-3 text-xs text-[#EFB806]">
                       <TagIcon size={12} className="inline mr-1" />
-                      Add Rs. {(30 - totalPrice).toFixed(2)} more for free
+                      Add Rs. {(5000 - totalPrice).toFixed(2)} more for free
                       shipping!
                     </div>}
                 </div>
