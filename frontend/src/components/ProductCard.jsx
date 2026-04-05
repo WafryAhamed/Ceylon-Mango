@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCartIcon, StarIcon } from 'lucide-react';
+import { ShoppingCartIcon, StarIcon, HeartIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCart } from '../context/CartContext';
+import { wishlistApi } from '../api/wishlistApi';
+import { useAuth } from '../context/AuthContext';
 export function ProductCard({
   product
 }) {
@@ -17,6 +19,22 @@ export function ProductCard({
     toast.success(`🥭 ${product.name} added to cart!`, {
       duration: 2500
     });
+  };
+
+  const { isAuthenticated } = useAuth();
+  const handleAddToWishlist = async e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.error('Please login to add to wishlist');
+      return;
+    }
+    try {
+      await wishlistApi.addToWishlist(product.id);
+      toast.success('Added to wishlist 💕');
+    } catch {
+      toast.error('Failed to add to wishlist');
+    }
   };
   return <motion.div whileHover={{
     y: -6
@@ -43,6 +61,12 @@ export function ProductCard({
                   Out of Stock
                 </span>}
             </div>
+
+            {/* Wishlist Quick Add */}
+            <motion.button onClick={handleAddToWishlist} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
+              className="absolute top-3 right-3 p-2 bg-[#222222]/90 backdrop-blur-sm border border-[#333333] rounded-full text-[#AAAAAA] hover:text-[#EFB806] hover:border-[#EFB806]/40 transition-all duration-300 shadow-lg z-10 opacity-0 group-hover:opacity-100">
+              <HeartIcon size={16} />
+            </motion.button>
 
             {/* Quick add button */}
             <motion.button onClick={handleAddToCart} whileHover={{

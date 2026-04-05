@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCartIcon, StarIcon, ChevronRightIcon, MinusIcon, PlusIcon, TruckIcon, ShieldCheckIcon, RefreshCwIcon } from 'lucide-react';
+import { ShoppingCartIcon, StarIcon, ChevronRightIcon, MinusIcon, PlusIcon, TruckIcon, ShieldCheckIcon, RefreshCwIcon, HeartIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
 import api from '../api/axios';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { wishlistApi } from '../api/wishlistApi';
+
 export function ProductDetails() {
   const {
     id
@@ -21,6 +24,7 @@ export function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -75,6 +79,18 @@ export function ProductDetails() {
   const handleAddToCart = () => {
     addToCart(product, quantity);
     toast.success(`🥭 ${product.name} added to cart!`);
+  };
+  const handleAddToWishlist = async () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to add to wishlist');
+      return;
+    }
+    try {
+      await wishlistApi.addToWishlist(product.id);
+      toast.success('Added to wishlist 💕');
+    } catch {
+      toast.error('Failed to add to wishlist');
+    }
   };
   const handleBuyNow = () => {
     addToCart(product, quantity);
@@ -249,6 +265,10 @@ export function ProductDetails() {
             }} className="flex-1 py-4 border border-[#EFB806]/50 text-[#EFB806] font-bold rounded-xl hover:bg-[#EFB806]/10 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed">
                 
                 Buy Now
+              </motion.button>
+              <motion.button onClick={handleAddToWishlist} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                className="w-14 h-14 flex items-center justify-center bg-[#222222] border border-[#333333] text-[#AAAAAA] rounded-xl hover:text-[#EFB806] hover:border-[#EFB806]/50 transition-all duration-200">
+                <HeartIcon size={20} />
               </motion.button>
             </div>
 
