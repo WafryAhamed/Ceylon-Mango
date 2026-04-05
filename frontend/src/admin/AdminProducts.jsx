@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { productApi } from '../api/productApi';
 import { ConfirmModal } from './components/ConfirmModal';
 import { AdminProductModal } from './components/AdminProductModal';
+import { Loader } from '../components/Loader';
 const categoryLabels = {
   fresh: 'Fresh',
   juice: 'Juice',
@@ -156,10 +157,9 @@ export function AdminProducts() {
     }} transition={{
       delay: 0.2
     }} className="bg-[#222222] rounded-2xl border border-[#333333] overflow-hidden">
-        {loading ? <div className="text-center py-24 text-[#AAAAAA]">
-          <span className="text-4xl mb-3 block">📦</span>
-          Loading products...
-        </div> : filtered.length === 0 ? <div className="text-center py-16">
+        {loading ? (
+          <Loader text="Loading products..." fullScreen={false} />
+        ) : filtered.length === 0 ? <div className="text-center py-16">
             <PackageIcon size={40} className="text-[#333333] mx-auto mb-3" />
             <p className="text-[#AAAAAA] text-sm">No products found</p>
           </div> : <div className="overflow-x-auto">

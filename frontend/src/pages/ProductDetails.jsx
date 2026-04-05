@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
+import { Loader } from '../components/Loader';
 import api from '../api/axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -51,12 +52,7 @@ export function ProductDetails() {
   }, [id]);
 
   if (loading) {
-    return <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center">
-        <div className="text-center">
-          <span className="text-6xl mb-4 block">🥭</span>
-          <p className="text-[#AAAAAA]">Loading...</p>
-        </div>
-      </div>;
+    return <Loader text="Loading product..." fullScreen={true} />;
   }
 
   if (!product) {

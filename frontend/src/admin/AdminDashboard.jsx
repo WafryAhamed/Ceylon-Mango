@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { productApi } from '../api/productApi';
 import { orderApi } from '../api/orderApi';
 import { userApi } from '../api/userApi';
+import { Loader } from '../components/Loader';
 
 const statusColors = {
   pending: {
@@ -80,7 +81,7 @@ export function AdminDashboard() {
     change: `${users.filter(u => u.role === 'admin').length} admins`
   }];
   if (loading) {
-    return <div className="text-center py-20 text-[#AAAAAA]">Loading dashboard...</div>;
+    return <Loader text="Loading dashboard..." fullScreen={false} />;
   }
 
   return <div className="space-y-6">

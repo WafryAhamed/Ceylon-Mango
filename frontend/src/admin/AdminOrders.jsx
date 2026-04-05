@@ -1,30 +1,35 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SearchIcon, ChevronDownIcon, ChevronUpIcon, ShoppingCartIcon } from 'lucide-react';
+import { SearchIcon, ChevronDownIcon, ChevronUpIcon, ShoppingCartIcon, LoaderIcon, TruckIcon, CheckCircleIcon, XCircleIcon } from 'lucide-react';
 import { toast } from 'sonner';
-
+import { Loader } from '../components/Loader';
 import { orderApi } from '../api/orderApi';
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 const statusColors = {
   pending: {
     bg: 'bg-[#EFB806]/20',
-    text: 'text-[#EFB806]'
+    text: 'text-[#EFB806]',
+    icon: LoaderIcon
   },
   processing: {
     bg: 'bg-blue-500/20',
-    text: 'text-blue-400'
+    text: 'text-blue-400',
+    icon: LoaderIcon
   },
   shipped: {
     bg: 'bg-purple-500/20',
-    text: 'text-purple-400'
+    text: 'text-purple-400',
+    icon: TruckIcon
   },
   delivered: {
     bg: 'bg-[#3B653D]/20',
-    text: 'text-[#3B653D]'
+    text: 'text-[#3B653D]',
+    icon: CheckCircleIcon
   },
   cancelled: {
     bg: 'bg-red-500/20',
-    text: 'text-red-400'
+    text: 'text-red-400',
+    icon: XCircleIcon
   }
 };
 function OrderRow({
@@ -53,14 +58,17 @@ function OrderRow({
           Rs. {order.total.toFixed(2)}
         </td>
         <td className="px-5 py-3" onClick={e => e.stopPropagation()}>
-          <select value={order.status} onChange={e => onStatusChange(order.id, e.target.value)} className={`text-xs px-2.5 py-1.5 rounded-lg font-semibold capitalize border-0 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#EFB806]/50 ${sc.bg} ${sc.text}`} style={{
-          backgroundColor: 'transparent'
-        }}>
-            
-            {statusOptions.map(s => <option key={s} value={s} className="bg-[#222222] text-[#F5F5F5]">
-                {s}
-              </option>)}
-          </select>
+          <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg ${sc.bg}`}>
+            <sc.icon size={14} className={sc.text} />
+            <select value={order.status} onChange={e => onStatusChange(order.id, e.target.value)} className={`text-xs font-semibold capitalize border-0 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#EFB806]/50 ${sc.text}`} style={{
+            backgroundColor: 'transparent'
+          }}>
+              
+              {statusOptions.map(s => <option key={s} value={s} className="bg-[#222222] text-[#F5F5F5]">
+                  {s}
+                </option>)}
+            </select>
+          </div>
         </td>
         <td className="px-5 py-3 text-[#AAAAAA] text-sm whitespace-nowrap">
           {order.paymentMethod}
@@ -208,10 +216,9 @@ export function AdminOrders() {
       delay: 0.2
     }} className="bg-[#222222] rounded-2xl border border-[#333333] overflow-hidden">
         
-        {loading ? <div className="text-center py-24 text-[#AAAAAA]">
-          <span className="text-4xl mb-3 block">📦</span>
-          Loading orders...
-        </div> : <div className="overflow-x-auto">
+        {loading ? (
+          <Loader text="Loading orders..." fullScreen={false} />
+        ) : <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-[#333333]">

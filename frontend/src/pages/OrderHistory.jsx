@@ -1,31 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PackageIcon, ChevronDownIcon, ChevronUpIcon, ShoppingBagIcon } from 'lucide-react';
+import { PackageIcon, ChevronDownIcon, ChevronUpIcon, ShoppingBagIcon, LoaderIcon, TruckIcon, CheckCircleIcon, XCircleIcon } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { Loader } from '../components/Loader';
 import api from '../api/axios';
 
 const statusConfig = {
   processing: {
     label: 'Processing',
     color: 'text-[#EFB806]',
-    bg: 'bg-[#EFB806]/20'
+    bg: 'bg-[#EFB806]/20',
+    icon: LoaderIcon
   },
   shipped: {
     label: 'Shipped',
     color: 'text-blue-400',
-    bg: 'bg-blue-500/20'
+    bg: 'bg-blue-500/20',
+    icon: TruckIcon
   },
   delivered: {
     label: 'Delivered',
     color: 'text-[#3B653D]',
-    bg: 'bg-[#3B653D]/20'
+    bg: 'bg-[#3B653D]/20',
+    icon: CheckCircleIcon
   },
   cancelled: {
     label: 'Cancelled',
     color: 'text-red-400',
-    bg: 'bg-red-500/20'
+    bg: 'bg-red-500/20',
+    icon: XCircleIcon
   }
 };
 function OrderCard({
@@ -63,8 +68,8 @@ function OrderCard({
             <p className="text-[#EFB806] font-bold">
               Rs. {order.total.toFixed(2)}
             </p>
-            <span className={`text-xs px-2.5 py-1 rounded-full font-semibold capitalize ${status.bg} ${status.color}`}>
-              
+            <span className={`text-xs px-2.5 py-1 rounded-full font-semibold capitalize inline-flex items-center gap-1.5 ${status.bg} ${status.color}`}>
+              <status.icon size={12} className={order.status === 'processing' ? 'animate-spin' : ''} />
               {status.label}
             </span>
           </div>
@@ -161,10 +166,9 @@ export function OrderHistory() {
           </p>
         </motion.div>
 
-        {loading ? <div className="text-center py-24">
-            <span className="text-5xl mb-4 block">🥭</span>
-            <p className="text-[#AAAAAA]">Loading orders...</p>
-          </div> : orders.length === 0 ? <div className="text-center py-24">
+        {loading ? (
+          <Loader text="Loading orders..." fullScreen={false} />
+        ) : orders.length === 0 ? <div className="text-center py-24">
             <ShoppingBagIcon size={56} className="text-[#333333] mx-auto mb-4" />
           
             <h2 className="text-2xl font-bold text-[#F5F5F5] mb-3" style={{

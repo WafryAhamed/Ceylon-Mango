@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
+import { Loader } from '../components/Loader';
 import { wishlistApi } from '../api/wishlistApi';
 import { useAuth } from '../context/AuthContext';
 
@@ -66,10 +67,7 @@ export function Wishlist() {
         </motion.div>
 
         {loading ? (
-          <div className="text-center py-24">
-            <span className="text-6xl mb-4 block">🥭</span>
-            <p className="text-[#AAAAAA]">Loading wishlist...</p>
-          </div>
+          <Loader text="Loading wishlist..." fullScreen={false} />
         ) : !isAuthenticated ? (
           <motion.div initial={{
             opacity: 0,

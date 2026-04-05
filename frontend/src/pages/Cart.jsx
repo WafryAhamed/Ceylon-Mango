@@ -6,6 +6,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { CartItemRow } from '../components/CartItemRow';
 import { useCart } from '../context/CartContext';
+import { toast } from 'sonner';
 export function Cart() {
   const {
     items,
@@ -85,7 +86,10 @@ export function Cart() {
                   <ArrowLeftIcon size={16} />
                   Continue Shopping
                 </Link>
-                <button onClick={clearCart} className="text-red-400/70 hover:text-red-400 text-sm transition-colors">
+                <button onClick={() => {
+                  clearCart();
+                  toast.success('Cart cleared');
+                }} className="text-red-400/70 hover:text-red-400 text-sm transition-colors">
                 
                   Clear Cart
                 </button>

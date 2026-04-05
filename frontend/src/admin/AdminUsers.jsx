@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 import { userApi } from '../api/userApi';
 import { ConfirmModal } from './components/ConfirmModal';
+import { Loader } from '../components/Loader';
 export function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -113,10 +114,9 @@ export function AdminUsers() {
     }} transition={{
       delay: 0.2
     }} className="bg-[#222222] rounded-2xl border border-[#333333] overflow-hidden">
-        {loading ? <div className="text-center py-24 text-[#AAAAAA]">
-          <span className="text-4xl mb-3 block">👥</span>
-          Loading users...
-        </div> : filtered.length === 0 ? <div className="text-center py-24 text-[#AAAAAA]">
+        {loading ? (
+          <Loader text="Loading users..." fullScreen={false} />
+        ) : filtered.length === 0 ? <div className="text-center py-24 text-[#AAAAAA]">
           <span className="text-4xl mb-3 block">🔍</span>
           No users found
         </div> : <div className="overflow-x-auto">

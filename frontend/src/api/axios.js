@@ -22,7 +22,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      // Don't redirect here — let the components handle it
+      // Gracefully redirect to login with query param so login page could show toast
+      window.location.href = '/login?expired=true';
     }
     return Promise.reject(error);
   }

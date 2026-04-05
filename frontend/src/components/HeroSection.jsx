@@ -201,33 +201,17 @@ export function HeroSection() {
               delay: 0.3,
               ease: 'easeOut'
             }} className="relative">
-                {/* White circle background */}
-                <div className="absolute inset-0 w-72 h-72 md:w-[420px] md:h-[420px] bg-white/95 rounded-full shadow-2xl shadow-[#EFB806]/30 flex items-center justify-center z-0" />
-                
                 {/* Mango Image - Centered */}
-                <picture className="relative z-10">
-                  <source 
-                    srcSet="https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=600&q=80 600w, https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=1000&q=85 1000w"
-                    sizes="(max-width: 768px) 280px, 340px"
-                  />
-                  <source 
-                    srcSet="https://images.pexels.com/photos/5632652/pexels-photo-5632652.jpeg?w=600 600w, https://images.pexels.com/photos/5632652/pexels-photo-5632652.jpeg?w=1000 1000w"
-                    sizes="(max-width: 768px) 280px, 340px"
-                  />
-                  <img 
-                    src="https://images.unsplash.com/photo-1580822261290-991b38693d1b?w=800&q=85" 
-                    alt="Premium Golden Mango - Fresh Organic Sri Lankan Fruit" 
-                    className="w-64 h-64 md:w-[340px] md:h-[340px] object-contain drop-shadow-2xl transition-all duration-500 hover:scale-105 relative z-10" 
-                    style={{
-                      filter: 'drop-shadow(0 0 30px rgba(239,184,6,0.4))',
-                    }}
-                    loading="eager"
-                    decoding="async"
-                    onError={(e) => {
-                      e.target.src = 'https://images.pexels.com/photos/5632652/pexels-photo-5632652.jpeg?w=800';
-                    }}
-                  />
-                </picture>
+                <img 
+                  src="/images/heropage.png" 
+                  alt="Ceylon Mango Premium Collection" 
+                  className="max-h-[350px] md:max-h-[450px] lg:max-h-[550px] w-auto object-contain rounded-3xl border border-[#EFB806]/20 shadow-2xl shadow-[#EFB806]/10 transition-all duration-500 hover:scale-[1.02] relative z-10" 
+                  style={{
+                    filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))',
+                  }}
+                  loading="eager"
+                  decoding="async"
+                />
                 
               </motion.div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Trash2Icon, PlusIcon, MinusIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { useCart } from '../context/CartContext';
 export function CartItemRow({
   item
@@ -77,7 +78,10 @@ export function CartItemRow({
       scale: 1.1
     }} whileTap={{
       scale: 0.9
-    }} onClick={() => removeFromCart(item.product.id)} className="p-2 text-[#AAAAAA] hover:text-red-400 transition-colors">
+    }} onClick={() => {
+        removeFromCart(item.product.id);
+        toast.error(`Removed ${item.product.name} from cart`);
+      }} className="p-2 text-[#AAAAAA] hover:text-red-400 transition-colors">
         
         <Trash2Icon size={16} />
       </motion.button>

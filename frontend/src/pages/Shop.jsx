@@ -5,6 +5,7 @@ import { SearchIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
+import { Loader } from '../components/Loader';
 import api from '../api/axios';
 
 const categories = [
@@ -160,9 +161,8 @@ export function Shop() {
 
           {/* Product Grid */}
           <AnimatePresence mode="wait">
-            {loading ? <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-24">
-                <span className="text-6xl mb-4 block">🥭</span>
-                <p className="text-[#AAAAAA]">Loading products...</p>
+            {loading ? <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <Loader text="Loading products..." fullScreen={false} />
               </motion.div> : filtered.length === 0 ? <motion.div key="empty" initial={{
             opacity: 0
           }} animate={{
