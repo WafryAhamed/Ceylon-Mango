@@ -194,15 +194,14 @@ export function Dashboard() {
                       {link.label}
                     </span>
                   </Link>)}
-                <button onClick={handleLogout} className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-900/20 transition-colors w-full group">
-                  
+                <Link to="/logout" className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-900/20 transition-colors w-full group text-left border-none bg-transparent">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-red-900/20">
                     <LogOutIcon size={16} className="text-red-400" />
                   </div>
                   <span className="text-[#AAAAAA] text-sm group-hover:text-red-400 transition-colors">
                     Sign Out
                   </span>
-                </button>
+                </Link>
               </div>
             </div>
           </motion.div>

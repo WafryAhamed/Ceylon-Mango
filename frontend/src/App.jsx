@@ -17,6 +17,8 @@ import { OrderHistory } from './pages/OrderHistory';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
 import { RefundPolicy } from './pages/RefundPolicy';
+import { Settings } from './pages/Settings';
+import { LogoutConfirm } from './pages/LogoutConfirm';
 import { Wishlist } from './pages/Wishlist';
 import { NotFound } from './pages/NotFound';
 import { AdminLayout } from './admin/AdminLayout';
@@ -63,7 +65,8 @@ function AppRoutes() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/settings" element={<Dashboard />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/logout" element={<LogoutConfirm />} />
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />

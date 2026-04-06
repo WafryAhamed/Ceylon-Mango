@@ -27,12 +27,6 @@ export function Navbar() {
     isAuthenticated
   } = useAuth();
   const location = useLocation();
-  const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      logout();
-      window.location.href = '/login';
-    }
-  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -87,9 +81,9 @@ export function Navbar() {
                   <Link to="/settings" className="flex items-center gap-3 px-4 py-2 text-sm text-[#AAAAAA] hover:text-[#F5F5F5] hover:bg-[#222222]">
                     <SettingsIcon size={16} /> Settings
                   </Link>
-                  <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:text-red-400 hover:bg-red-500/10 w-full text-left">
+                  <Link to="/logout" className="flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:text-red-400 hover:bg-red-500/10 w-full text-left">
                     <LogOutIcon size={16} /> Sign Out
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -167,9 +161,9 @@ export function Navbar() {
                     <Link to="/settings" className="py-2 text-center border border-[#333333] text-[#AAAAAA] rounded-full text-sm font-medium">
                       Settings
                     </Link>
-                    <button onClick={handleLogout} className="py-2 text-center bg-red-500/10 text-red-500 rounded-full text-sm font-medium">
+                    <Link to="/logout" className="py-2 text-center bg-red-500/10 text-red-500 rounded-full text-sm font-medium">
                       Sign Out
-                    </button>
+                    </Link>
                   </>
                 )}
                 <Link to="/shop" className="py-2 text-center bg-[#EFB806] text-[#1A1A1A] rounded-full text-sm font-semibold">
