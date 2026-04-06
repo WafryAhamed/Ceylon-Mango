@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircleIcon, PackageIcon, ShoppingBagIcon } from 'lucide-react';
 function Confetti() {
@@ -32,7 +32,8 @@ function Confetti() {
     </div>;
 }
 export function OrderSuccess() {
-  const [orderId] = useState(`ORD-${Math.floor(Math.random() * 90000) + 10000}`);
+  const location = useLocation();
+  const orderId = location.state?.orderId || `ORD-${Math.floor(Math.random() * 90000) + 10000}`;
   return <div className="min-h-screen w-full bg-[#1A1A1A] flex items-center justify-center px-4 relative overflow-hidden">
       <Confetti />
 

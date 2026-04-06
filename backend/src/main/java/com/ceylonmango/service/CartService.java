@@ -21,6 +21,7 @@ public class CartService {
     private final ProductRepository productRepository;
     private final AuthService authService;
 
+    @Transactional(readOnly = true)
     public List<CartItemDto> getCartItems() {
         User user = authService.getCurrentUser();
         return cartItemRepository.findByUserId(user.getId()).stream()

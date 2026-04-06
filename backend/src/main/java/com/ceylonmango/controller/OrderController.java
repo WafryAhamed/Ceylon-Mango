@@ -19,6 +19,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody OrderRequest request) {
         return ResponseEntity.ok(orderService.createOrder(request));
     }

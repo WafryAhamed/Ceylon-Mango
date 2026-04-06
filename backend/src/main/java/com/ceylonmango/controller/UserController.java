@@ -1,7 +1,9 @@
 package com.ceylonmango.controller;
 
 import com.ceylonmango.dto.ApiResponse;
+import com.ceylonmango.dto.UpdateProfileRequest;
 import com.ceylonmango.dto.UserDto;
+import com.ceylonmango.service.AuthService;
 import com.ceylonmango.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,19 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<UserDto> getCurrentUser() {
+        return ResponseEntity.ok(UserDto.fromEntity(authService.getCurrentUser()));
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<UserDto> updateProfile(@RequestBody UpdateProfileRequest request) {
+        return ResponseEntity.ok(authService.updateProfile(request));
+    }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")

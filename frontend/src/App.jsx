@@ -63,6 +63,7 @@ function AppRoutes() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/settings" element={<Dashboard />} />
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />

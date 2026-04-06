@@ -11,8 +11,8 @@ export const authApi = {
     api.post('/auth/admin/login', { email, password }),
 
   getMe: () =>
-    api.get('/auth/me'),
+    api.get('/users/me'),
 
   updateProfile: (updates) =>
-    api.put('/auth/profile', updates),
+    api.put('/users/update', updates),
 };

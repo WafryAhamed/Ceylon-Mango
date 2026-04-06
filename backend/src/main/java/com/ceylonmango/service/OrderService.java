@@ -26,6 +26,7 @@ public class OrderService {
     @Transactional
     public OrderDto createOrder(OrderRequest request) {
         User user = authService.getCurrentUser();
+        log.info("Creating order for user #{} ({})", user.getId(), user.getEmail());
         List<CartItem> cartItems = cartItemRepository.findByUserId(user.getId());
 
         if (cartItems.isEmpty()) {
@@ -62,6 +63,7 @@ public class OrderService {
 
         order.setItems(orderItems);
         Order savedOrder = orderRepository.save(order);
+        log.info("Order #{} saved to DB — total: {}, items: {}", savedOrder.getId(), savedOrder.getTotalPrice(), savedOrder.getItems().size());
 
         // Clear cart after order
         cartItemRepository.deleteByUserId(user.getId());
@@ -84,20 +86,30 @@ public class OrderService {
         return OrderDto.fromEntity(savedOrder);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderDto> getUserOrders() {
         User user = authService.getCurrentUser();
-        return orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId()).stream()
+        log.info("Fetching orders for user #{} ({})", user.getId(), user.getEmail());
+        List<OrderDto> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId()).stream()
                 .map(OrderDto::fromEntity)
                 .toList();
+        log.info("Found {} orders for user #{}", orders.size(), user.getId());
+        return orders;
     }
 
+    @Transactional(readOnly = true)
     public List<OrderDto> getAllOrders() {
-        return orderRepository.findAllByOrderByCreatedAtDesc().stream()
+        log.info("Admin fetching all orders");
+        List<OrderDto> orders = orderRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(OrderDto::fromEntity)
                 .toList();
+        log.info("Returning {} total orders", orders.size());
+        return orders;
     }
 
+    @Transactional
     public OrderDto updateOrderStatus(Long orderId, String status) {
+        log.info("Updating order #{} status to '{}'", orderId, status);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
@@ -109,6 +121,7 @@ public class OrderService {
         }
 
         Order saved = orderRepository.save(order);
+        log.info("Order #{} status updated to '{}'", orderId, saved.getStatus());
         return OrderDto.fromEntity(saved);
     }
 }

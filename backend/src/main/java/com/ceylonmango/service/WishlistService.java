@@ -7,6 +7,7 @@ import com.ceylonmango.model.WishlistItem;
 import com.ceylonmango.repository.ProductRepository;
 import com.ceylonmango.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +15,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
     private final AuthService authService;
 
+    @Transactional(readOnly = true)
     public List<WishlistDto> getWishlist() {
         User user = authService.getCurrentUser();
         return wishlistRepository.findByUserId(user.getId()).stream()
@@ -27,6 +30,7 @@ public class WishlistService {
                 .toList();
     }
 
+    @Transactional
     public WishlistDto addToWishlist(Long productId) {
         User user = authService.getCurrentUser();
 

@@ -5,6 +5,7 @@ import { CreditCardIcon, TruckIcon, CheckIcon, LockIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { Navbar } from '../components/Navbar';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { orderApi } from '../api/orderApi';
 export function Checkout() {
   const navigate = useNavigate();
@@ -13,6 +14,15 @@ export function Checkout() {
     totalPrice,
     clearCart
   } = useCart();
+  const { user, isAuthenticated } = useAuth();
+  
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      toast.error('Please login to place an order');
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
+
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -42,12 +52,12 @@ export function Checkout() {
     setLoading(true);
     try {
       const fullAddress = `${form.firstName} ${form.lastName}, ${form.address}, ${form.city}, ${form.zip}, ${form.country}`;
-      await orderApi.createOrder({
+      const res = await orderApi.createOrder({
         shippingAddress: fullAddress,
         paymentMethod: paymentMethod === 'card' ? 'CREDIT_CARD' : 'CASH_ON_DELIVERY'
       });
       clearCart();
-      navigate('/order-success');
+      navigate('/order-success', { state: { orderId: res.data.id } });
     } catch {
       toast.error('Failed to place order. Please try again.');
       setLoading(false);

@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 
 const statusColors = {
+  pending: 'bg-[#EFB806]/20 text-[#EFB806]',
   processing: 'bg-[#EFB806]/20 text-[#EFB806]',
   shipped: 'bg-blue-500/20 text-blue-400',
   delivered: 'bg-[#3B653D]/20 text-[#3B653D]',
@@ -37,6 +38,14 @@ export function Dashboard() {
     updateProfile(editForm);
     setEditing(false);
   };
+  
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      logout();
+      window.location.href = '/login';
+    }
+  };
+
   const recentOrders = orders.slice(0, 3);
   const quickLinks = [{
     icon: PackageIcon,
@@ -51,7 +60,7 @@ export function Dashboard() {
   }, {
     icon: SettingsIcon,
     label: 'Settings',
-    href: '#',
+    href: '/settings',
     color: '#3B653D'
   }];
   return <div className="min-h-screen w-full bg-[#1A1A1A]">
@@ -185,7 +194,7 @@ export function Dashboard() {
                       {link.label}
                     </span>
                   </Link>)}
-                <button onClick={logout} className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-900/20 transition-colors w-full group">
+                <button onClick={handleLogout} className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-900/20 transition-colors w-full group">
                   
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-red-900/20">
                     <LogOutIcon size={16} className="text-red-400" />

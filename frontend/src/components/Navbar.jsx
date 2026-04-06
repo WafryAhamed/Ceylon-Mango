@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCartIcon, UserIcon, MenuIcon, XIcon } from 'lucide-react';
+import { ShoppingCartIcon, UserIcon, MenuIcon, XIcon, SettingsIcon, LogOutIcon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 const navLinks = [{
@@ -27,6 +27,13 @@ export function Navbar() {
     isAuthenticated
   } = useAuth();
   const location = useLocation();
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      logout();
+      window.location.href = '/login';
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
@@ -71,10 +78,21 @@ export function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
-            <Link to={isAuthenticated ? '/dashboard' : '/login'} className="p-2 text-[#F5F5F5]/80 hover:text-[#EFB806] transition-colors duration-200">
-              
-              <UserIcon size={20} />
-            </Link>
+            <div className="relative group">
+              <Link to={isAuthenticated ? '/dashboard' : '/login'} className="p-2 text-[#F5F5F5]/80 hover:text-[#EFB806] transition-colors duration-200 block">
+                <UserIcon size={20} />
+              </Link>
+              {isAuthenticated && (
+                <div className="absolute right-0 mt-2 w-48 bg-[#1A1A1A] border border-[#333333] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-2">
+                  <Link to="/settings" className="flex items-center gap-3 px-4 py-2 text-sm text-[#AAAAAA] hover:text-[#F5F5F5] hover:bg-[#222222]">
+                    <SettingsIcon size={16} /> Settings
+                  </Link>
+                  <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:text-red-400 hover:bg-red-500/10 w-full text-left">
+                    <LogOutIcon size={16} /> Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
             <Link to="/cart" className="relative p-2 text-[#F5F5F5]/80 hover:text-[#EFB806] transition-colors duration-200">
               
               <ShoppingCartIcon size={20} />
@@ -140,12 +158,21 @@ export function Navbar() {
                     {link.label}
                   </Link>
                 </motion.div>)}
-              <div className="flex gap-3 pt-2">
-                <Link to={isAuthenticated ? '/dashboard' : '/login'} className="flex-1 py-2 text-center border border-[#EFB806]/40 text-[#EFB806] rounded-full text-sm font-medium">
-                
+              <div className="flex flex-col gap-3 pt-2">
+                <Link to={isAuthenticated ? '/dashboard' : '/login'} className="py-2 text-center border border-[#EFB806]/40 text-[#EFB806] rounded-full text-sm font-medium">
                   {isAuthenticated ? 'Dashboard' : 'Login'}
                 </Link>
-                <Link to="/shop" className="flex-1 py-2 text-center bg-[#EFB806] text-[#1A1A1A] rounded-full text-sm font-semibold">
+                {isAuthenticated && (
+                  <>
+                    <Link to="/settings" className="py-2 text-center border border-[#333333] text-[#AAAAAA] rounded-full text-sm font-medium">
+                      Settings
+                    </Link>
+                    <button onClick={handleLogout} className="py-2 text-center bg-red-500/10 text-red-500 rounded-full text-sm font-medium">
+                      Sign Out
+                    </button>
+                  </>
+                )}
+                <Link to="/shop" className="py-2 text-center bg-[#EFB806] text-[#1A1A1A] rounded-full text-sm font-semibold">
                 
                   Order Now
                 </Link>
